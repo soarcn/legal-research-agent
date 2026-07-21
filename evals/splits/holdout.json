@@ -1,0 +1,31 @@
+{
+  "benchmark": "legal-rag-benchmark-v1",
+  "dataset": "isaacus/legal-rag-bench",
+  "dataset_revision": "db0b31dc6d195ce9916897e1ac5e4e6209736c8a",
+  "qa_sha256": "e3b869a4e293d081ec5f5b39c2058c8d27b36f611aa9f8275eb1877a7c8b38b0",
+  "split": "holdout",
+  "seed": 20260721,
+  "count": 20,
+  "question_ids": [
+    77,
+    13,
+    78,
+    50,
+    31,
+    23,
+    82,
+    17,
+    75,
+    57,
+    27,
+    1,
+    60,
+    36,
+    52,
+    51,
+    91,
+    49,
+    24,
+    79
+  ]
+}
