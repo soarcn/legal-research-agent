@@ -8,7 +8,6 @@ dependencies = [
   "alembic>=1.14",
   "asyncpg>=0.30",
   "fastapi>=0.115",
-  "pydantic-ai>=0.0.24",
   "pydantic-settings>=2.7",
   "psycopg[binary]>=3.2",
   "sqlalchemy[asyncio]>=2.0",
@@ -20,9 +19,14 @@ dependencies = [
 [dependency-groups]
 dev = [
   "httpx>=0.28",
+  "pyright>=1.1",
   "pytest>=8.3",
   "pytest-asyncio>=0.25",
+  "pytest-cov>=6.0",
   "ruff>=0.9",
+]
+agent = [
+  "pydantic-ai>=0.0.24",
 ]
 
 [tool.pytest.ini_options]
@@ -35,4 +39,44 @@ line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP"]
+select = [
+  "E",     # pycodestyle errors
+  "F",     # pyflakes
+  "I",     # isort
+  "UP",    # pyupgrade
+  "B",     # flake8-bugbear
+  "SIM",   # flake8-simplify
+  "RUF",   # Ruff-specific
+  "N",     # pep8-naming
+  "T20",   # flake8-print (no print in production code)
+  "PTH",   # flake8-use-pathlib
+  "ASYNC", # async linting
+]
+ignore = [
+  "E501",  # line length managed by ruff format
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["T20"]  # allow print in tests
+"scripts/**" = ["T20"]  # allow print in scripts
+
+[tool.pyright]
+pythonVersion = "3.12"
+pythonPlatform = "Darwin"
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "basic"
+include = ["src", "apps"]
+
+[tool.coverage.run]
+source = ["src/legal_research", "apps"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 0
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+]

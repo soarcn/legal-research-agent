@@ -27,6 +27,7 @@ The project is complete when:
 - BM25, dense, hybrid, exact lookup, and reranking have measured comparisons and failure analysis;
 - the system returns concise structured English answers with claim-level verified citations;
 - unsupported, partial, and conflicting evidence paths behave correctly;
+- supported questions meet the answer-rate gate and are not hidden by an always-refuse policy;
 - Ollama and an LM Studio-validated OpenAI-compatible endpoint run the same workflow;
 - constrained Agent tools, limits, and observable traces are implemented;
 - Harbor runs the complete end-to-end regression suite with one documented command;

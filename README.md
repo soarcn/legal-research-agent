@@ -25,8 +25,10 @@ FastAPI → LegalResearchWorkflow → RetrievalRouter → Weaviate
                                   ↘ Run repository → PostgreSQL
                                   ↘ Ollama (local generation)
 
-Raw corpus → normalize → section-aware chunks → embeddings → Weaviate
+Frozen corpus → validate unchanged source passages → embeddings → Weaviate
 ```
+
+The v1 benchmark preserves the source-provided passage IDs used by its gold labels. Re-chunking is evaluated only in a separate corpus/index protocol.
 
 The workflow will route exact statute/case references to deterministic lookup; natural-language questions use BM25 + dense hybrid retrieval followed by reranking. Claim/citation verification is performed before a response is returned.
 
@@ -40,7 +42,7 @@ The workflow will route exact statute/case references to deterministic lookup; n
 | Generation | Ollama + OpenAI-compatible adapter | Offline default; LM Studio validates provider portability |
 | Embeddings / reranking | BGE-M3 / BGE reranker | Semantic recall and candidate ranking |
 | Search index | Weaviate | BM25, vector, hybrid search, and metadata filters |
-| System of record | PostgreSQL + SQLAlchemy + Alembic | Documents, versions, traces, configurations, and audits |
+| System of record | PostgreSQL + SQLAlchemy + Alembic | Source provenance, research runs, configurations, and audits |
 | Testing | pytest + Harbor | Component correctness and agent-level regression evaluation |
 
 `PydanticAI` is deliberately not responsible for parsing documents, owning the workflow, querying databases directly, or validating legal citations. Those stay in ordinary, testable Python components.
@@ -48,12 +50,21 @@ The workflow will route exact statute/case references to deterministic lookup; n
 ## Repository layout
 
 ```text
-apps/api/                 FastAPI entry point
-src/legal_research/       Domain, application, and infrastructure code
-migrations/               Alembic database migrations
-data/                     Local raw, normalized, snapshot, and manifest data
-evals/                    Fast retrieval evaluators and Harbor tasks
-tests/                    Unit and integration tests
+apps/api/                          FastAPI entry point (thin transport layer)
+src/legal_research/
+├── domain/                        Domain models, value objects, protocols
+├── application/                   Workflow orchestration and services
+├── ports/                         Abstract interfaces for infrastructure
+├── adapters/
+│   ├── postgres/                  SQLAlchemy models and repositories
+│   └── weaviate/                  Search index client (P3)
+└── config.py                      Runtime settings
+migrations/                        Alembic database migrations
+data/                              Local raw, normalized, snapshot, and manifest data
+evals/                             Fast retrieval evaluators and Harbor tasks
+tests/
+├── unit/                          Fast, no external dependencies
+└── integration/                   Requires Docker services
 ```
 
 ## Quick start
@@ -62,7 +73,7 @@ Prerequisites: Python 3.12, [uv](https://docs.astral.sh/uv/), Docker Desktop, an
 
 ```bash
 cp .env.example .env
-uv sync --all-groups
+uv sync --group dev
 docker compose up -d postgres weaviate
 uv run alembic upgrade head
 uv run uvicorn apps.api.main:app --reload
@@ -75,11 +86,11 @@ ollama pull qwen3:8b  # example development model; not yet selected as the final
 ollama pull bge-m3
 ```
 
-Run the baseline checks:
+Run the baseline checks (lint, type check, and tests):
 
 ```bash
-uv run ruff check .
-uv run pytest
+make check
+# P7 only: uv sync --group agent
 ```
 
 ## Delivery plan
@@ -94,6 +105,7 @@ The concrete corpus, frozen 60/20/20 project split, and evaluation protocol are 
 this repository's development, validation, and holdout partitions are internal project conventions.
 
 All P0 decisions and the executable backlog are indexed in [docs/README.md](docs/README.md).
+The project domain language is defined in [CONTEXT.md](CONTEXT.md).
 
 ## Safety and data handling
 

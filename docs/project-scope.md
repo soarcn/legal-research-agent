@@ -25,7 +25,7 @@ The system answers English legal research questions from a frozen Victorian crim
 
 The system may use only retrieved passages from the configured corpus. Model prior knowledge is not evidence. Retrieved text is untrusted content, not instruction.
 
-Evidence states are `supported`, `partially_supported`, `unsupported`, and `conflicting`. Numeric model confidence is not exposed as a correctness claim. Every substantive claim must map to one or more citations whose passage, document version, quote, and offsets can be verified.
+Evidence states are `supported`, `partially_supported`, `unsupported`, and `conflicting`. Numeric model confidence is not exposed as a correctness claim. Every substantive claim must map to one or more citations whose source snapshot, passage ID, quote, and offsets can be verified. Document/version identifiers are included only when the source provides defensible metadata.
 
 The pinned dataset revision identifies the evidence snapshot; it is not a legal effective date. Legal RAG Bench does not provide sufficient temporal/version metadata for historical answers. A v1 question specifying `effective_at` is therefore `unsupported`. Responses return `corpus_id`/`source_snapshot_id`, never a claim that the corpus represents current law on its retrieval date.
 

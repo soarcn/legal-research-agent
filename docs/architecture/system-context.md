@@ -46,14 +46,14 @@ API handlers stay thin. They validate transport inputs, call application service
 ## Data lifecycle
 
 ```text
-Pinned source + manifest
-    → parser
-    → normalized document and sections
-    → section-aware chunker with offsets
-    → stable legal passages
+Pinned source + committed metadata manifest
+    → source-passage loader and validation
+    → unchanged source passages with source-native IDs
     ├── PostgreSQL provenance/version metadata
     └── embeddings + searchable metadata → versioned Weaviate collection
 ```
+
+The frozen v1 benchmark does not reconstruct a legal document/version hierarchy that the source does not publish. A separate ingestion path may parse richer future sources into documents, versions, sections, and generated chunks. Those derived chunks never replace the source-passage benchmark unit silently.
 
 PostgreSQL is authoritative. Weaviate contains rebuildable passages, vectors, BM25 fields, and filter metadata. A destructive search-schema change creates a new collection version; it does not mutate the accepted collection in place.
 
@@ -91,10 +91,10 @@ Business code depends on a model protocol and typed request/response models, not
 - `POST /v1/questions`
 - `GET /v1/runs/{run_id}`
 - `POST /v1/documents/ingest`
-- `GET /v1/health` (process liveness only)
-- `GET /v1/ready` (configured dependency capability checks)
+- `GET /health` (unversioned process liveness only)
+- `GET /ready` (unversioned configured dependency capability checks)
 
-The first implementation may expose only the endpoints required by its current phase, but new public routes use `/v1`.
+Operational endpoints are unversioned. Business endpoints and resources use `/v1`. The first implementation may expose only the endpoints required by its current phase.
 
 ## Security boundary
 

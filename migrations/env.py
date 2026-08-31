@@ -3,8 +3,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from legal_research.adapters.postgres.models import Base
 from legal_research.config import get_settings
-from legal_research.storage.models import Base
 
 config = context.config
 if config.config_file_name is not None:

@@ -19,6 +19,7 @@ Non-functional priorities are reproducibility, auditability, maintainability, la
 | Citation precision | Fraction of returned citations that validly support their linked claim | `>= 0.95` |
 | Unsupported-claim rate | Fraction of substantive claims without sufficient cited evidence | `<= 0.05` |
 | Abstention accuracy | Correct refusal on questions unsupported by the configured corpus | `>= 0.80` |
+| Supported-case answer rate | Fraction of labelled supported cases that receive a substantive supported answer rather than a refusal | `>= 0.80` |
 | Structured-output success | Valid output within two attempts (initial response plus one repair retry) | `>= 0.98` |
 | Index rebuild | Rebuild from source produces expected stable IDs/counts | `100%` |
 | Provider portability | Same workflow works with Ollama and configured OpenAI-compatible endpoint | required |
@@ -47,6 +48,7 @@ A relative regression greater than 20% is “material” and requires analysis; 
 - Run holdout only during final P8 evaluation and do not tune against it afterward.
 - Preserve per-case outputs, aggregate metrics, configuration, corpus hash, model revision, and code revision.
 - A more complex Agent is retained only if it meets all safety gates and does not regress the deterministic P6 pipeline baseline.
+- Report the evidence-state confusion matrix. Abstention accuracy and supported-case answer rate are separate hard gates so an always-refuse policy cannot pass.
 
 For P7 non-inferiority, both candidates must pass every hard gate applicable to their case type. `Not applicable` is permitted only when the case has no labelled denominator and must be recorded per case.
 

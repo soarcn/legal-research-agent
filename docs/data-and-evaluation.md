@@ -21,6 +21,8 @@ The v1 corpus is [Legal RAG Bench](https://huggingface.co/datasets/isaacus/legal
 
 Raw corpus files live under `data/raw/`, are ignored by Git, and must not be redistributed with this repository. The manifest records source revision, hashes, counts, retrieval time, and licence policy.
 
+Each corpus row is a source-provided passage with `id`, `title`, `text`, and `footnotes`. For `legal-rag-benchmark-v1`, that unchanged Source Passage is the retrieval and scoring unit because QA gold labels point directly to its source ID. The primary benchmark does not re-chunk these passages. Chunking experiments use a separate versioned index and evaluation protocol and must not report source-passage Recall@k unless an explicit, reviewed mapping preserves the gold semantics.
+
 The dataset metadata declares `CC BY-NC-SA 4.0`, while its prose licence section says `CC BY-NC 4.0`. This project applies the more restrictive `CC BY-NC-SA 4.0` policy until clarified. It is a non-commercial learning project.
 
 ## Frozen benchmark split
@@ -69,6 +71,7 @@ P6 adds:
 - claim-level citation precision;
 - unsupported-claim rate;
 - answerability and abstention accuracy;
+- supported-case answer rate and false-refusal rate;
 - structured-output success rate;
 - deterministic citation integrity checks.
 
@@ -92,6 +95,7 @@ These are project learning gates, not production legal-system guarantees:
 | Citation precision | `>= 0.95` |
 | Unsupported-claim rate | `<= 0.05` |
 | Unanswerable abstention accuracy | `>= 0.80` |
+| Supported-case answer rate | `>= 0.80` |
 | Structured-output success | `>= 0.98` |
 | Agent budget violations | `0` |
 
@@ -123,6 +127,6 @@ Project-created cases must record author, reviewer, expected evidence state, exp
 
 The official 60/20/20 IDs are frozen for `legal-rag-benchmark-v1`; none of its three splits expands in place. Project-authored suites carry independent versions and may add cases by publishing a new suite version. Any change to validation or holdout IDs, gold passages, answerability labels, or scoring semantics creates a new benchmark version. Corrections remain append-only: preserve the old manifest and results, publish a new version, and explain the difference.
 
-Routine regression commands exclude holdout. A holdout run requires an explicit `--allow-holdout` acknowledgement and writes operator, UTC time, Git revision, corpus hash, configuration hash, and reason to the experiment record. After the first formal holdout run, behavioural code or configuration changes require a new release candidate and benchmark version rather than silently rerunning v1.
+Routine regression commands exclude holdout. A holdout run requires an explicit `--allow-holdout` acknowledgement and writes operator, UTC time, Git revision, corpus hash, configuration hash, and reason to the experiment record. After the first formal holdout run, the v1 holdout is marked consumed and remains available only as an historical result. Behavioural changes may continue against development, validation, project-authored regression, and red-team suites, but the same 100 questions cannot produce a fresh holdout through reshuffling or renaming. A later formal unseen evaluation requires independently sourced or authored cases that were not exposed during prior development or reporting.
 
 The primary benchmark always uses the frozen corpus. Fresh Criminal Charge Book snapshots and document-version experiments use a separate corpus and separate results; they never overwrite v1 benchmark reports.
