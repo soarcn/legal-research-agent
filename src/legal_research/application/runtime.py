@@ -9,8 +9,10 @@ from dataclasses import dataclass
 
 from legal_research.adapters.postgres import AsyncPostgresDatabase, PostgresReadinessProbe
 from legal_research.adapters.weaviate import WeaviateReadinessProbe
+from legal_research.application.generation_readiness import GenerationReadinessProbe
 from legal_research.application.readiness import ReadinessService
 from legal_research.config import Settings
+from legal_research.ports.generation import GenerationReadinessProvider
 
 
 @dataclass(slots=True)
@@ -26,17 +28,27 @@ class ReadinessRuntime:
         await self._postgres_database.dispose()
 
 
-def build_readiness_runtime(settings: Settings) -> ReadinessRuntime:
-    """Compose only the P1 services that the application can currently use."""
+def build_readiness_runtime(
+    settings: Settings,
+    *,
+    generation_provider: GenerationReadinessProvider | None = None,
+) -> ReadinessRuntime:
+    """Compose P1 capabilities; register generation only when an adapter is supplied."""
 
     postgres_database = AsyncPostgresDatabase(settings.database_url)
-    service = ReadinessService(
-        probes=(
-            PostgresReadinessProbe(postgres_database),
-            WeaviateReadinessProbe.from_url(
-                settings.weaviate_url,
-                grpc_port=settings.weaviate_grpc_port,
-            ),
+    probes = [
+        PostgresReadinessProbe(postgres_database),
+        WeaviateReadinessProbe.from_url(
+            settings.weaviate_url,
+            grpc_port=settings.weaviate_grpc_port,
+        ),
+    ]
+    if generation_provider is not None:
+        probes.append(
+            GenerationReadinessProbe(
+                provider_config=settings.generation_provider_config,
+                provider=generation_provider,
+            )
         )
-    )
+    service = ReadinessService(probes=probes)
     return ReadinessRuntime(service=service, _postgres_database=postgres_database)
