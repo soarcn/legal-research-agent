@@ -14,7 +14,7 @@ behaviour work.
 | --- | --- | --- |
 | Python | `.python-version` selects `3.12`; `requires-python` rejects other minor versions | Removes accidental testing against a different language runtime |
 | uv | `[tool.uv].required-version` and CI both select `0.11.26` | Avoids lock/sync behaviour changing between machines |
-| Dependencies | `uv.lock` plus `uv sync --frozen --group dev` | Installs the reviewed resolution and refuses to rewrite it |
+| Dependencies | `uv.lock` plus `uv sync --locked --group dev` | Verifies and installs the reviewed resolution without rewriting it |
 | Agent framework | `pydantic-ai` exists only in the explicit `agent` group | Keeps P1–P6 deterministic work independent of P7 Agent code |
 
 Dependency groups have deliberate boundaries:
@@ -28,7 +28,7 @@ Dependency groups have deliberate boundaries:
 Prepare the exact development environment:
 
 ```bash
-uv sync --frozen --group dev
+uv sync --locked --group dev
 ```
 
 Run the shared repository gate:

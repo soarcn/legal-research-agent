@@ -73,7 +73,7 @@ Prerequisites: Python 3.12, [uv](https://docs.astral.sh/uv/), Docker Desktop, an
 
 ```bash
 cp .env.example .env
-uv sync --frozen --group dev
+uv sync --locked --group dev
 docker compose up -d postgres weaviate
 uv run alembic upgrade head
 uv run uvicorn apps.api.main:app --reload
