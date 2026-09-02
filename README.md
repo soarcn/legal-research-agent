@@ -64,22 +64,33 @@ data/                              Local raw, normalized, snapshot, and manifest
 evals/                             Fast retrieval evaluators and Harbor tasks
 tests/
 ├── unit/                          Fast, no external dependencies
-└── integration/                   Requires Docker services
+└── integration/                   HTTP seam tests; real-service tests are added with their adapters
 ```
 
 ## Quick start
 
-Prerequisites: Python 3.12, [uv](https://docs.astral.sh/uv/), Docker Desktop, and Ollama.
+Current prerequisites: Python 3.12 and [uv](https://docs.astral.sh/uv/).
+Docker Desktop and Ollama become required when their real runtime integrations
+are introduced in later P1 work.
 
 ```bash
 cp .env.example .env
 uv sync --locked --group dev
-docker compose up -d postgres weaviate
-uv run alembic upgrade head
 uv run uvicorn apps.api.main:app --reload
 ```
 
-Check the service at `http://127.0.0.1:8000/health`. Install local models separately when the generation and retrieval components are implemented:
+Check the running API at `http://127.0.0.1:8000/health` and its configured
+capabilities at `http://127.0.0.1:8000/ready`. `/health` answers only whether
+the API process is alive; `/ready` returns `503` when a configured capability
+is unavailable. See [service liveness and readiness](docs/readiness.md) for
+the response contract, safe diagnostics, and troubleshooting.
+
+The current readiness tests use deterministic fake probes. PostgreSQL,
+Weaviate, migrations, Ollama, local models, and corpus ingestion are not yet
+implemented; they are added in the following P1 issues. Do not treat a current
+`/ready` response as proof that those real services are connected.
+
+Install local models separately when the generation and retrieval components are implemented:
 
 ```bash
 ollama pull qwen3:8b  # example development model; not yet selected as the final default
