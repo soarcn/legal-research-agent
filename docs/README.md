@@ -11,6 +11,7 @@ P0 is complete when these documents are current and reviewed:
 - [Risks](risks.md)
 - [Engineering governance](engineering-governance.md)
 - [Quality gates and CI](quality-gates.md)
+- [Service liveness and readiness](readiness.md)
 - [Experiment versioning](experiment-versioning.md)
 - [P1–P9 backlog](backlog.md)
 - [P0 completion record](p0-completion.md)
