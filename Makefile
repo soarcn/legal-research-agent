@@ -1,4 +1,4 @@
-.PHONY: up down api lint format typecheck test cov check migrate
+.PHONY: up down api lint format typecheck test cov check audit migrate
 
 up:
 	docker compose up -d postgres weaviate
@@ -29,6 +29,9 @@ check:
 	uv run ruff check .
 	uv run pyright
 	uv run pytest
+
+audit:
+	uv run pip-audit --local
 
 migrate:
 	uv run alembic upgrade head
