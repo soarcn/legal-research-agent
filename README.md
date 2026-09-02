@@ -69,13 +69,15 @@ tests/
 
 ## Quick start
 
-Current prerequisites: Python 3.12 and [uv](https://docs.astral.sh/uv/).
-Docker Desktop and Ollama become required when their real runtime integrations
-are introduced in later P1 work.
+Current prerequisites: Python 3.12, [uv](https://docs.astral.sh/uv/), and
+Docker Desktop (or another running Docker-compatible daemon). Ollama and local
+models are not required until their later P1 capability work.
 
 ```bash
 cp .env.example .env
 uv sync --locked --group dev
+make up
+make migrate
 uv run uvicorn apps.api.main:app --reload
 ```
 
@@ -85,10 +87,13 @@ the API process is alive; `/ready` returns `503` when a configured capability
 is unavailable. See [service liveness and readiness](docs/readiness.md) for
 the response contract, safe diagnostics, and troubleshooting.
 
-The current readiness tests use deterministic fake probes. PostgreSQL,
-Weaviate, migrations, Ollama, local models, and corpus ingestion are not yet
-implemented; they are added in the following P1 issues. Do not treat a current
-`/ready` response as proof that those real services are connected.
+The current readiness composition checks PostgreSQL and Weaviate through their
+host-Python adapters. A `200` proves those two configured runtime capabilities
+were reachable at that instant; it does not prove a Weaviate collection exists,
+a corpus is loaded, law is current, or a legal answer is reliable. Ollama,
+LM Studio, embeddings, reranking, and corpus ingestion are later P1/P3 work.
+See [local service lifecycle](docs/service-lifecycle.md) for non-destructive
+start/stop, opt-in real-service tests, recovery, and explicit reset commands.
 
 Install local models separately when the generation and retrieval components are implemented:
 

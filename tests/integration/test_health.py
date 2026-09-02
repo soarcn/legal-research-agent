@@ -3,7 +3,10 @@ import asyncio
 from fastapi.testclient import TestClient
 
 from apps.api.main import app, create_app
+from legal_research.adapters.postgres import AsyncPostgresDatabase
 from legal_research.application.readiness import ReadinessService
+from legal_research.application.runtime import ReadinessRuntime
+from legal_research.config import Settings
 from legal_research.ports.readiness import CapabilityStatus, ProbeResult
 
 
@@ -48,6 +51,37 @@ def test_health_does_not_invoke_readiness_probes() -> None:
 
     assert response.status_code == 200
     assert probe.calls == 0
+
+
+def test_default_runtime_composition_exposes_registered_capabilities_through_ready(
+    monkeypatch,
+) -> None:
+    runtime = ReadinessRuntime(
+        service=ReadinessService(
+            [
+                FakeProbe("postgres", ProbeResult.ready(name="postgres")),
+                FakeProbe("weaviate", ProbeResult(status=CapabilityStatus.FAILED)),
+            ]
+        ),
+        _postgres_database=AsyncPostgresDatabase(Settings().database_url),
+    )
+    monkeypatch.setattr("apps.api.main.build_readiness_runtime", lambda _: runtime)
+
+    with TestClient(create_app()) as client:
+        response = client.get("/ready")
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "status": "not_ready",
+        "capabilities": [
+            {"name": "postgres", "status": "ready"},
+            {
+                "name": "weaviate",
+                "status": "failed",
+                "diagnostic": "Capability is unavailable.",
+            },
+        ],
+    }
 
 
 def test_ready_returns_only_safe_provider_neutral_fields_when_all_probes_are_ready() -> None:

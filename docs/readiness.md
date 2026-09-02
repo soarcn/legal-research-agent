@@ -69,25 +69,30 @@ must not expose:
 Persisted diagnostics follow the same boundary. Use structured, redacted
 operational events rather than arbitrary exception strings.
 
-## Current scope: fake probes only
+## Current configured capabilities
 
-Issue #3 establishes the contract with deterministic fake probes. These tests
-prove that the API reports readiness consistently without requiring Docker,
-Ollama, a model download, or the Legal RAG Bench corpus.
+The application now composes two real, host-Python capability probes:
 
-No real PostgreSQL, Weaviate, Ollama, embedding, reranker, or
-OpenAI-compatible provider checks exist at this point. Those integrations are
-added in the subsequent runtime and capability issues (#4–#10), where each
-adapter must implement the same probe contract and receive an integration or
-smoke test.
+- PostgreSQL: an async SQLAlchemy connection issues a read-only `SELECT 1`.
+- Weaviate: an async client connects through the configured HTTP and gRPC
+  endpoints, asks the server whether it is ready, then closes the client.
 
-This distinction matters: a fake-probe `200` proves only the orchestration and
-HTTP semantics. It does not prove that a locally deployed dependency is
-reachable.
+The deterministic tests still inject fake probes to prove orchestration and
+safe diagnostic behaviour without Docker. Separate tests marked
+`real_service` exercise the pinned local containers, and run only when
+`RUN_REAL_INTEGRATION=1` is explicitly set. A fake-probe `200` proves the HTTP
+semantics; a real-service `200` proves only these two runtime connections at
+that instant. Neither establishes an indexed corpus, legal completeness,
+currency, or answer correctness.
+
+Ollama, embedding, reranking, and OpenAI-compatible provider probes remain
+later P1 work. Each must implement the same contract, document its timeout and
+configuration, and add a focused test before it becomes a configured
+capability.
 
 ## Local verification
 
-Run the focused fake-probe tests during development:
+Run the deterministic readiness tests during development:
 
 ```bash
 uv run pytest tests/unit/test_readiness.py -q
@@ -100,6 +105,17 @@ Run the complete deterministic gate before handoff:
 make check
 make audit
 ```
+
+With Docker services healthy, exercise the real adapters explicitly:
+
+```bash
+make up
+make migrate
+RUN_REAL_INTEGRATION=1 uv run pytest tests/integration -m real_service -q
+```
+
+See [local service lifecycle](service-lifecycle.md) for volume preservation,
+recovery, and the destructive reset confirmation required for each service.
 
 For a manual HTTP check, start the API and query both endpoints:
 
@@ -123,7 +139,7 @@ credentials to a `curl` command or paste secrets into issue reports.
 
 ## What changes later
 
-When real dependencies are introduced, readiness will gain adapters for
-PostgreSQL, Weaviate, and configured model capabilities. Each addition must
-document its timeout, safe failure reason, configuration requirement, and
-focused integration test. `/health` remains process-only throughout.
+When each later model dependency is introduced, readiness will gain a
+configured capability probe. Each addition must document its timeout, safe
+failure reason, configuration requirement, and focused integration test.
+`/health` remains process-only throughout.

@@ -11,7 +11,11 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Alembic uses a synchronous driver even though the application uses asyncpg.
-sync_database_url = get_settings().database_url.replace("+asyncpg", "+psycopg")
+# Integration tests may supply an isolated database URL through Config attributes
+# so a fresh-baseline check never mutates the normal development database.
+sync_database_url = config.attributes.get("database_url")
+if sync_database_url is None:
+    sync_database_url = get_settings().database_url.replace("+asyncpg", "+psycopg")
 config.set_main_option("sqlalchemy.url", sync_database_url)
 target_metadata = Base.metadata
 

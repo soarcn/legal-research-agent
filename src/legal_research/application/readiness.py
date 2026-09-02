@@ -34,6 +34,12 @@ class ReadinessService:
         self._probes = tuple(probes)
         self._timeout_seconds = timeout_seconds
 
+    @property
+    def capability_names(self) -> tuple[str, ...]:
+        """Return configured capability names without running their probes."""
+
+        return tuple(probe.name for probe in self._probes)
+
     async def check(self) -> ReadinessReport:
         """Return readiness without exposing external implementation details."""
 

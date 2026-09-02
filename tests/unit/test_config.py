@@ -7,6 +7,7 @@ def test_default_settings_load() -> None:
 
     assert settings.app_env == "development"
     assert "legal_agent" in settings.database_url
+    assert settings.weaviate_grpc_port == 50051
     assert settings.corpus_source_snapshot_id.startswith("legal-rag-bench@")
 
 

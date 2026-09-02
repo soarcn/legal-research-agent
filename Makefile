@@ -1,10 +1,27 @@
-.PHONY: up down api lint format typecheck test cov check audit migrate
+.PHONY: up down services-status reset-postgres reset-weaviate api lint format typecheck test cov check audit migrate
 
 up:
 	docker compose up -d postgres weaviate
 
 down:
 	docker compose down
+
+services-status:
+	docker compose ps
+
+# Destructive: only removes the named PostgreSQL volume after an explicit confirmation value.
+reset-postgres:
+	test "$(CONFIRM_RESET)" = "postgres"
+	docker compose stop postgres
+	docker compose rm --force postgres
+	docker volume rm legal-research-agent-postgres-data
+
+# Destructive: only removes the named Weaviate volume after an explicit confirmation value.
+reset-weaviate:
+	test "$(CONFIRM_RESET)" = "weaviate"
+	docker compose stop weaviate
+	docker compose rm --force weaviate
+	docker volume rm legal-research-agent-weaviate-data
 
 api:
 	uv run uvicorn apps.api.main:app --reload

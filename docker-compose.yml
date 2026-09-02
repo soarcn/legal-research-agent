@@ -1,6 +1,8 @@
+name: legal-research-agent
+
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:16.6-alpine3.20
     environment:
       POSTGRES_DB: legal_agent
       POSTGRES_USER: legal_agent
@@ -14,6 +16,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 10s
 
   weaviate:
     image: cr.weaviate.io/semitechnologies/weaviate:1.28.4
@@ -29,7 +32,16 @@ services:
       CLUSTER_HOSTNAME: "node1"
     volumes:
       - weaviate-data:/var/lib/weaviate
+    healthcheck:
+      test:
+        ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/.well-known/ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
 volumes:
   postgres-data:
+    name: legal-research-agent-postgres-data
   weaviate-data:
+    name: legal-research-agent-weaviate-data
