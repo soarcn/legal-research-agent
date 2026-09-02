@@ -1,7 +1,11 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Response, status
 from pydantic import BaseModel
 
 from legal_research.application.readiness import ReadinessService
+from legal_research.application.runtime import ReadinessRuntime, build_readiness_runtime
 from legal_research.config import get_settings
 from legal_research.ports.readiness import CapabilityStatus, ReadinessStatus
 
@@ -25,11 +29,24 @@ def create_app(*, readiness_service: ReadinessService | None = None) -> FastAPI:
     """Build the HTTP application with an optional readiness service for integration tests."""
 
     settings = get_settings()
-    resolved_readiness_service = readiness_service or ReadinessService(probes=[])
+    runtime: ReadinessRuntime | None = None
+    if readiness_service is None:
+        runtime = build_readiness_runtime(settings)
+        resolved_readiness_service = runtime.service
+    else:
+        resolved_readiness_service = readiness_service
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        yield
+        if runtime is not None:
+            await runtime.close()
+
     api = FastAPI(
         title="Australian Legal Research Agent",
         version="0.1.0",
         description="Local, evidence-grounded legal research assistance. Not legal advice.",
+        lifespan=lifespan,
     )
 
     @api.get("/health", tags=["system"])

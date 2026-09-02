@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     database_url: str = "postgresql+asyncpg://legal_agent:legal_agent@localhost:5432/legal_agent"
     weaviate_url: str = "http://localhost:8080"
+    weaviate_grpc_port: int = 50051
     ollama_base_url: str = "http://localhost:11434"
     corpus_source_snapshot_id: str = "legal-rag-bench@db0b31dc6d195ce9916897e1ac5e4e6209736c8a"
 

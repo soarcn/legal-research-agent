@@ -37,6 +37,9 @@ required-version = "==0.11.26"
 pythonpath = [".", "src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+  "real_service: requires explicitly enabled local Docker services (RUN_REAL_INTEGRATION=1)",
+]
 
 [tool.ruff]
 line-length = 100

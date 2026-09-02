@@ -1,1 +1,5 @@
-"""Weaviate adapter — search index client and collection management."""
+"""Weaviate adapter — runtime capability checks and later search components."""
+
+from legal_research.adapters.weaviate.readiness import WeaviateReadinessProbe
+
+__all__ = ["WeaviateReadinessProbe"]

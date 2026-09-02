@@ -25,7 +25,7 @@ Risk status is reviewed at every phase exit. Probability and impact use `low`, `
 | R-19 | An always-refuse policy appears safe under one-sided abstention metrics | Medium | High | Gate supported-case answer rate separately and report evidence-state confusion matrix | P6–P8 | Mitigated |
 | R-20 | Reshuffled known questions are misrepresented as a fresh holdout | Medium | High | Mark v1 holdout consumed; require genuinely unseen cases for later formal evaluation | P8 | Mitigated |
 | R-21 | A Python dependency contains a published vulnerability | Medium | High | Locked dependencies, `pip-audit` in local/CI gates, explicit upgrade and re-lock on findings | P1/All | Mitigated |
-| R-22 | Placeholder readiness probes are mistaken for live dependency checks | Medium | High | Label Issue #3 probes as deterministic fakes; add real adapter smoke tests in runtime/capability issues; keep `/health` process-only | P1 | Open |
+| R-22 | A readiness response is mistaken for proof that every future dependency or the legal corpus is usable | Medium | High | PostgreSQL and Weaviate now use real adapter probes; keep `/health` process-only, list configured capabilities explicitly, and add a real smoke test with each later model capability | P1 | Open |
 
 ## Escalation rule
 
