@@ -36,7 +36,7 @@ Prefer the standard library and existing dependencies. A new dependency must doc
 
 Environment variables manage secrets and environment-specific credentials. Versioned YAML/TOML files manage application, model, retrieval, and experiment settings. Experimental parameters are not hard-coded in business logic.
 
-`.env` never enters Git. Logs do not include keys. CI eventually runs secret scanning, Python dependency audit, and a baseline container scan.
+`.env` never enters Git. Logs do not include keys. CI runs full-history secret scanning and Python dependency auditing. A baseline container scan is added when the P1 container images are finalized.
 
 ## Failure handling
 
@@ -57,7 +57,7 @@ Environment variables manage secrets and environment-specific credentials. Versi
 - relevant behaviour evaluation for model-dependent code;
 - documentation and risk updates.
 
-CI runs deterministic checks without local model dependencies. Full Weaviate/PostgreSQL/Ollama/Harbor experiments remain local in v1.
+`make check` is the shared local and CI entry point for formatting, lint, type checking, and deterministic tests. `make audit` checks the installed Python environment for published vulnerabilities and fails on findings. CI runs both commands without Agent-only dependencies, downloaded corpora, local models, or service containers. Full Weaviate/PostgreSQL/Ollama/Harbor experiments remain local in v1.
 
 ## Artifact retention
 

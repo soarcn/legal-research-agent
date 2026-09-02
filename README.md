@@ -73,7 +73,7 @@ Prerequisites: Python 3.12, [uv](https://docs.astral.sh/uv/), Docker Desktop, an
 
 ```bash
 cp .env.example .env
-uv sync --group dev
+uv sync --frozen --group dev
 docker compose up -d postgres weaviate
 uv run alembic upgrade head
 uv run uvicorn apps.api.main:app --reload
@@ -86,12 +86,18 @@ ollama pull qwen3:8b  # example development model; not yet selected as the final
 ollama pull bge-m3
 ```
 
-Run the baseline checks (lint, type check, and tests):
+Run the deterministic quality gate, then audit the installed Python dependencies:
 
 ```bash
 make check
+make audit
 # P7 only: uv sync --group agent
 ```
+
+`make check` is the single local command for formatting, lint, type checking, and tests. GitHub
+Actions runs the same command on pull requests and pushes to `main`, without models, downloaded
+corpora, or local services. See [docs/quality-gates.md](docs/quality-gates.md) for the purpose of each
+check and how to respond to failures.
 
 ## Delivery plan
 
