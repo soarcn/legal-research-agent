@@ -17,9 +17,9 @@ from the local cache only.
 | Runtime | sentence-transformers 5.7.0; torch 2.14.0 |
 | Device | `mps` |
 | Expected/observed dimension | 1024 / 1024 |
-| First embedding latency | 7,145.26 ms |
-| Cached repeat latency | 15.44 ms |
-| Process peak RSS after run | 925,188,096 bytes |
+| First embedding latency | 9,442.16 ms |
+| Cached repeat latency | 15.59 ms |
+| Process peak RSS after run | 925,024,256 bytes |
 | Model-cache observation | 4,586,489,872 bytes |
 
 The local JSON artifact is ignored by Git. It contains the same safe summary
