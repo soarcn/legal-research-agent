@@ -4,6 +4,7 @@ import asyncio
 import math
 import threading
 from collections.abc import Sequence
+from importlib import import_module
 from typing import Protocol, cast
 
 from legal_research.config import EmbeddingModelConfig
@@ -48,14 +49,15 @@ class DefaultSentenceTransformerLoader:
 
     def load(self, config: EmbeddingModelConfig) -> SentenceTransformerModel:
         try:
-            from sentence_transformers import SentenceTransformer
+            sentence_transformers = import_module("sentence_transformers")
+            sentence_transformer = sentence_transformers.SentenceTransformer
         except ImportError as error:
             raise EmbeddingError(EmbeddingFailureKind.UNAVAILABLE) from error
 
         try:
             model = cast(
                 SentenceTransformerModel,
-                SentenceTransformer(
+                sentence_transformer(
                     config.model_id,
                     revision=config.revision,
                     device=config.device,
