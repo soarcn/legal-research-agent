@@ -1,8 +1,10 @@
 # Generation-provider configuration
 
-P1.5 defines the configuration contract for one active generation provider.
-It does not connect to a model runtime, download a model, or make generation
-available through the API. Those capability checks are P1.6 work.
+P1.5 defined the configuration contract for one active generation provider.
+P1.6 adds bounded HTTP adapters for the local Ollama API and the generic
+OpenAI-compatible API. LM Studio is the reference runtime for validating the
+latter. The adapters support plain text and caller-owned Pydantic JSON schemas;
+they do not make legal answer generation available through the API.
 
 ## One active provider
 
@@ -76,7 +78,37 @@ and wraps it in a provider-neutral `generation` capability probe. The probe
 uses the selected `GenerationProviderConfig` and maps only its status into the
 shared readiness result; an inactive provider is never constructed or checked.
 
-P1.5 deliberately does not construct a network adapter from configuration.
-The fake provider proves the contract deterministically. P1.6 supplies the
-Ollama or OpenAI-compatible adapter to this seam, at which point the active
-provider becomes part of the default application's real `/ready` report.
+The default application's real `/ready` report constructs only the selected
+adapter and checks whether its configured model is visible. It never performs
+generation as part of readiness. Transport, timeout, rate-limit, rejected
+request, malformed response, and schema-validation failures are translated to
+the provider-neutral result contract without returning endpoint payloads or
+exceptions.
+
+## Explicit capability smoke tests
+
+These opt-in commands run one non-legal plain-text prompt and one fixed JSON
+schema prompt. They write a redacted local report under
+`artifacts/capability-reports/`, which is not committed. A passing report
+proves only this configured model/provider combination answered those two
+requests; it does not prove legal answer quality, citation reliability, or
+future model behaviour.
+
+```bash
+# Select a model visible in `ollama list`.
+GENERATION_MODEL=gpt-oss:20b make generation-smoke-ollama
+
+# Start an LM Studio local server, load a text-generation model, then use its
+# model identifier from GET /v1/models.
+GENERATION_MODEL=your-lm-studio-model make generation-smoke-lm-studio
+```
+
+The smoke test fails safely when the configured model is not visible. This is
+expected when no model has been installed in Ollama or loaded into LM Studio;
+it is not a signal to download a model automatically.
+
+Some local reasoning models expose a JSON-schema-constrained object through
+`reasoning_content` while returning an empty normal content field. For a
+structured request only, the adapter may validate that field directly against
+the caller's schema when normal content is empty. It never uses that fallback
+for plain text and never records, returns, or exposes the raw field.

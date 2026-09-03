@@ -1,4 +1,4 @@
-.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding lint format typecheck test cov check audit migrate embedding-smoke
+.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding lint format typecheck test cov check audit migrate embedding-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
 
 up:
 	docker compose up -d postgres weaviate
@@ -55,6 +55,15 @@ migrate:
 
 embedding-smoke:
 	EMBEDDING__LOCAL_FILES_ONLY=false PYTHONPATH=src uv run --group embedding python scripts/run_embedding_smoke.py
+
+generation-smoke:
+	PYTHONPATH=src uv run python scripts/run_generation_smoke.py
+
+generation-smoke-ollama:
+	GENERATION_PROVIDER=ollama GENERATION_BASE_URL=http://localhost:11434 $(MAKE) generation-smoke
+
+generation-smoke-lm-studio:
+	GENERATION_PROVIDER=openai_compatible GENERATION_BASE_URL=http://localhost:1234/v1 $(MAKE) generation-smoke
 
 api-with-embedding:
 	EMBEDDING_ENABLED=true PYTHONPATH=src uv run uvicorn apps.api.main:app --reload
