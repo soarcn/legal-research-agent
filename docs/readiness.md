@@ -90,15 +90,19 @@ readiness composition. The `generation` probe lists the visible models through
 the provider's read-only endpoint and reports ready only when the configured
 model is present; it does not send a prompt or disclose provider payloads.
 
-Embedding capability is opt-in during P1 component work. With
+Embedding and reranker capability checks remain opt-in during P1. With
 `EMBEDDING_ENABLED=true`, the first `/ready` call can load BGE-M3 and run one
-fixed non-legal probe, so it may take materially longer than subsequent calls;
-`READINESS_TIMEOUT_SECONDS` defaults to 60. See
-[BGE-M3 embedding capability](embedding-capability.md). Reranking remains
-later P1 work. P1 exit enables all
-accepted capabilities together. Each addition must document its timeout and
-configuration and add a focused test before it becomes a configured default
-capability.
+fixed non-legal embedding probe. With `RERANKER_ENABLED=true`, it can also load
+the BGE cross-encoder and score two fixed non-legal passages. These first calls
+can take materially longer than subsequent calls; `READINESS_TIMEOUT_SECONDS`
+defaults to 60. See [BGE-M3 embedding capability](embedding-capability.md) and
+[BGE reranker capability](reranker-capability.md).
+
+Use `make api-with-model-capabilities` to enable both optional local checks.
+The configured generation provider remains required, so set its model and
+endpoint to a locally installed compatible model before expecting `/ready` to
+return `200`. Each addition must document its timeout and configuration and add
+a focused test before it becomes a configured default capability.
 
 ## Local verification
 

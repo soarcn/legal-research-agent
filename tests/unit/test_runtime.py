@@ -28,6 +28,35 @@ async def test_runtime_registers_embedding_only_when_explicitly_enabled() -> Non
         await runtime.close()
 
 
+async def test_runtime_registers_reranker_only_when_explicitly_enabled() -> None:
+    runtime = build_readiness_runtime(Settings(reranker_enabled=True))
+
+    try:
+        assert runtime.service.capability_names == (
+            "postgres",
+            "weaviate",
+            "generation",
+            "reranker",
+        )
+    finally:
+        await runtime.close()
+
+
+async def test_runtime_registers_all_explicit_model_capabilities() -> None:
+    runtime = build_readiness_runtime(Settings(embedding_enabled=True, reranker_enabled=True))
+
+    try:
+        assert runtime.service.capability_names == (
+            "postgres",
+            "weaviate",
+            "generation",
+            "embedding",
+            "reranker",
+        )
+    finally:
+        await runtime.close()
+
+
 async def test_runtime_registers_only_the_supplied_active_generation_provider() -> None:
     runtime = build_readiness_runtime(
         Settings(),

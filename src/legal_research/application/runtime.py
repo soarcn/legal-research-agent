@@ -6,10 +6,12 @@ from dataclasses import dataclass
 from legal_research.adapters.embedding import BgeM3EmbeddingProvider
 from legal_research.adapters.generation import create_generation_provider
 from legal_research.adapters.postgres import AsyncPostgresDatabase, PostgresReadinessProbe
+from legal_research.adapters.reranking import BgeM3RerankerProvider
 from legal_research.adapters.weaviate import WeaviateReadinessProbe
 from legal_research.application.embedding_readiness import EmbeddingReadinessProbe
 from legal_research.application.generation_readiness import GenerationReadinessProbe
 from legal_research.application.readiness import ReadinessService
+from legal_research.application.reranker_readiness import RerankerReadinessProbe
 from legal_research.config import Settings
 from legal_research.ports.generation import GenerationReadinessProvider
 
@@ -59,6 +61,8 @@ def build_readiness_runtime(
     )
     if settings.embedding_enabled:
         probes.append(EmbeddingReadinessProbe(BgeM3EmbeddingProvider(settings.embedding)))
+    if settings.reranker_enabled:
+        probes.append(RerankerReadinessProbe(BgeM3RerankerProvider(settings.reranker)))
     service = ReadinessService(probes=probes, timeout_seconds=settings.readiness_timeout_seconds)
     close_generation = (
         created_generation_provider.aclose if created_generation_provider is not None else None
