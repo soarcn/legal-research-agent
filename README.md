@@ -95,6 +95,13 @@ LM Studio, embeddings, reranking, and corpus ingestion are later P1/P3 work.
 See [local service lifecycle](docs/service-lifecycle.md) for non-destructive
 start/stop, opt-in real-service tests, recovery, and explicit reset commands.
 
+Generation is configured as exactly one active provider: Ollama is the offline
+default, while a generic OpenAI-compatible endpoint will later be validated
+against LM Studio. The typed configuration is available now, but provider
+connectivity and model capability checks are not complete until P1.6. See
+[generation-provider configuration](docs/generation-providers.md) for safe
+environment variables and local examples.
+
 Install local models separately when the generation and retrieval components are implemented:
 
 ```bash

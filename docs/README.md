@@ -14,6 +14,7 @@ P0 is complete when these documents are current and reviewed:
 - [Service liveness and readiness](readiness.md)
 - [PostgreSQL runtime capability](postgresql.md)
 - [Weaviate runtime capability](weaviate.md)
+- [Generation-provider configuration](generation-providers.md)
 - [Local service lifecycle](service-lifecycle.md)
 - [Experiment versioning](experiment-versioning.md)
 - [P1–P9 backlog](backlog.md)

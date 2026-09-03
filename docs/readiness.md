@@ -86,9 +86,11 @@ that instant. Neither establishes an indexed corpus, legal completeness,
 currency, or answer correctness.
 
 Ollama, embedding, reranking, and OpenAI-compatible provider probes remain
-later P1 work. Each must implement the same contract, document its timeout and
-configuration, and add a focused test before it becomes a configured
-capability.
+later P1 work. P1.5 provides the typed active-provider configuration and the
+composition seam for one `generation` probe, but does not register a network
+adapter yet. P1.6 supplies and validates that adapter. Each later capability
+must document its timeout and configuration and add a focused test before it
+becomes a configured default capability.
 
 ## Local verification
 
