@@ -39,6 +39,7 @@ async def test_async_postgres_adapter_proves_connection_commit_and_rollback() ->
                 text("SELECT count(*) FROM p1_transaction_probe")
             )
             assert committed_count == 1
+            await connection.commit()
 
             rollback_transaction = await connection.begin()
             await connection.execute(
@@ -60,7 +61,7 @@ async def test_empty_alembic_baseline_creates_no_legal_domain_tables() -> None:
     baseline_database_name = f"p1_baseline_{uuid4().hex}"
     baseline_url = source_url.set(database=baseline_database_name)
     admin_url = source_url.set(database="postgres")
-    admin_database = AsyncPostgresDatabase(str(admin_url))
+    admin_database = AsyncPostgresDatabase(admin_url.render_as_string(hide_password=False))
     baseline_database: AsyncPostgresDatabase | None = None
 
     try:
@@ -72,7 +73,9 @@ async def test_empty_alembic_baseline_creates_no_legal_domain_tables() -> None:
         config.attributes["database_url"] = _sync_url(baseline_url)
         command.upgrade(config, "head")
 
-        baseline_database = AsyncPostgresDatabase(str(baseline_url))
+        baseline_database = AsyncPostgresDatabase(
+            baseline_url.render_as_string(hide_password=False)
+        )
         async with baseline_database.engine.connect() as connection:
             result = await connection.execute(
                 text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
@@ -95,4 +98,4 @@ async def test_empty_alembic_baseline_creates_no_legal_domain_tables() -> None:
 def _sync_url(database_url: URL) -> str:
     """Return the synchronous URL required by Alembic's migration environment."""
 
-    return str(database_url.set(drivername="postgresql+psycopg"))
+    return database_url.set(drivername="postgresql+psycopg").render_as_string(hide_password=False)
