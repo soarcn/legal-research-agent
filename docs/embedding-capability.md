@@ -20,9 +20,9 @@ configured maximum sequence length, and rejects an entire response if its
 vector count, dimension, or numeric values are invalid. It applies
 normalisation itself after validation, so the vector-space contract does not
 depend on an SDK option. It does not load source passages, create an index, or
-calculate retrieval metrics. The BGE-M3 model card documents
-`SentenceTransformer` as a supported loading path and is the source for this
-model selection.
+calculate retrieval metrics. The [BGE-M3 model card](https://huggingface.co/BAAI/bge-m3)
+documents `SentenceTransformer` as a supported loading path and is the source
+for this model selection.
 
 ## Installation and smoke check
 
