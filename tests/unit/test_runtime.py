@@ -9,7 +9,7 @@ async def test_runtime_registers_default_capabilities_without_connecting() -> No
     runtime = build_readiness_runtime(Settings())
 
     try:
-        assert runtime.service.capability_names == ("postgres", "weaviate")
+        assert runtime.service.capability_names == ("postgres", "weaviate", "generation")
     finally:
         await runtime.close()
 
@@ -18,7 +18,12 @@ async def test_runtime_registers_embedding_only_when_explicitly_enabled() -> Non
     runtime = build_readiness_runtime(Settings(embedding_enabled=True))
 
     try:
-        assert runtime.service.capability_names == ("postgres", "weaviate", "embedding")
+        assert runtime.service.capability_names == (
+            "postgres",
+            "weaviate",
+            "generation",
+            "embedding",
+        )
     finally:
         await runtime.close()
 

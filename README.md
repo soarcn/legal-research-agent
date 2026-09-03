@@ -87,29 +87,38 @@ the API process is alive; `/ready` returns `503` when a configured capability
 is unavailable. See [service liveness and readiness](docs/readiness.md) for
 the response contract, safe diagnostics, and troubleshooting.
 
-The default readiness composition checks PostgreSQL and Weaviate through their
-host-Python adapters. The P1 embedding probe is available with
+The default readiness composition checks PostgreSQL, Weaviate, and the one
+configured local generation provider through host-Python adapters. Generation
+readiness verifies only that its configured model is visible; it does not
+generate text. The P1 embedding probe is available with
 `EMBEDDING_ENABLED=true`, or through `make api-with-embedding`; it deliberately
 remains opt-in until generation and reranking capability work completes. A
 `200` proves only the configured runtime capabilities were reachable at that
 instant; it does not prove a Weaviate collection exists, a corpus is loaded,
-law is current, or a legal answer is reliable. Ollama, LM Studio, reranking,
-and corpus ingestion are later P1/P3 work.
+law is current, or a legal answer is reliable. Reranking and corpus ingestion
+are later P1/P3 work.
 See [local service lifecycle](docs/service-lifecycle.md) for non-destructive
 start/stop, opt-in real-service tests, recovery, and explicit reset commands.
 
 Generation is configured as exactly one active provider: Ollama is the offline
-default, while a generic OpenAI-compatible endpoint will later be validated
-against LM Studio. The typed configuration is available now, but provider
-connectivity and model capability checks are not complete until P1.6. See
+default, while a generic OpenAI-compatible endpoint is designed to be
+validated against LM Studio. See
 [generation-provider configuration](docs/generation-providers.md) for safe
 environment variables and local examples.
 
-Install local models separately when the generation and retrieval components are implemented:
+Install local models separately before running an explicit generation smoke test:
 
 ```bash
 ollama pull qwen3:8b  # example development model; not yet selected as the final default
 ollama pull bge-m3
+```
+
+Run one non-legal text and JSON-schema test against a model you have already
+installed or loaded. The report is local and redacted:
+
+```bash
+GENERATION_MODEL=gpt-oss:20b make generation-smoke-ollama
+GENERATION_MODEL=your-lm-studio-model make generation-smoke-lm-studio
 ```
 
 The P1 dense BGE-M3 host adapter is separate from Ollama. Install its optional
