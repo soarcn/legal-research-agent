@@ -29,6 +29,9 @@ dev = [
 agent = [
   "pydantic-ai>=0.0.24",
 ]
+embedding = [
+    "sentence-transformers>=5.0,<6.0",
+]
 
 [tool.uv]
 required-version = "==0.11.26"
@@ -73,7 +76,7 @@ pythonPlatform = "Darwin"
 venvPath = "."
 venv = ".venv"
 typeCheckingMode = "basic"
-include = ["src", "apps"]
+include = ["src", "apps", "scripts"]
 
 [tool.coverage.run]
 source = ["src/legal_research", "apps"]

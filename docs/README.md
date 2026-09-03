@@ -14,6 +14,8 @@ P0 is complete when these documents are current and reviewed:
 - [Service liveness and readiness](readiness.md)
 - [PostgreSQL runtime capability](postgresql.md)
 - [Weaviate runtime capability](weaviate.md)
+- [BGE-M3 embedding capability](embedding-capability.md)
+- [BGE-M3 reference capability report](capability-reports/embedding-bge-m3-reference.md)
 - [Local service lifecycle](service-lifecycle.md)
 - [Experiment versioning](experiment-versioning.md)
 - [P1–P9 backlog](backlog.md)
