@@ -15,6 +15,7 @@ P0 is complete when these documents are current and reviewed:
 - [PostgreSQL runtime capability](postgresql.md)
 - [Weaviate runtime capability](weaviate.md)
 - [BGE-M3 embedding capability](embedding-capability.md)
+- [BGE reranker capability](reranker-capability.md)
 - [BGE-M3 reference capability report](capability-reports/embedding-bge-m3-reference.md)
 - [Generation-provider configuration](generation-providers.md)
 - [Local generation capability reference report](capability-reports/generation-local-reference.md)

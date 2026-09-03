@@ -145,6 +145,9 @@ dev = [
 embedding = [
     { name = "sentence-transformers" },
 ]
+reranker = [
+    { name = "sentence-transformers" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -172,6 +175,7 @@ dev = [
     { name = "ruff", specifier = ">=0.9" },
 ]
 embedding = [{ name = "sentence-transformers", specifier = ">=5.0,<6.0" }]
+reranker = [{ name = "sentence-transformers", specifier = ">=5.0,<6.0" }]
 
 [[package]]
 name = "authlib"

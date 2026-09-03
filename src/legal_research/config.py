@@ -30,6 +30,24 @@ class EmbeddingModelConfig(BaseModel):
         return value
 
 
+class RerankerModelConfig(BaseModel):
+    """Fixed cross-encoder reranker settings for controlled P5 experiments."""
+
+    model_id: str = "BAAI/bge-reranker-v2-m3"
+    revision: str = "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+    device: str = "mps"
+    batch_size: int = Field(default=4, ge=1, le=64)
+    max_sequence_length: int = Field(default=512, ge=1, le=4096)
+    local_files_only: bool = True
+
+    @field_validator("revision")
+    @classmethod
+    def revision_must_be_a_commit_sha(cls, value: str) -> str:
+        if len(value) != 40 or any(character not in "0123456789abcdef" for character in value):
+            raise ValueError("Reranker revision must be a 40-character lowercase commit SHA.")
+        return value
+
+
 class GenerationProvider(StrEnum):
     """Supported generation-provider protocol families."""
 
@@ -116,6 +134,8 @@ class Settings(BaseSettings):
     generation_supports_streaming: bool = False
     embedding: EmbeddingModelConfig = EmbeddingModelConfig()
     embedding_enabled: bool = False
+    reranker: RerankerModelConfig = RerankerModelConfig()
+    reranker_enabled: bool = False
     readiness_timeout_seconds: float = Field(default=60.0, gt=0, le=300)
 
     @model_validator(mode="after")
