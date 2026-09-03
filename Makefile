@@ -1,4 +1,4 @@
-.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding lint format typecheck test cov check audit migrate embedding-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
+.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding lint format typecheck test cov check audit migrate embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
 
 up:
 	docker compose up -d postgres weaviate
@@ -55,6 +55,9 @@ migrate:
 
 embedding-smoke:
 	EMBEDDING__LOCAL_FILES_ONLY=false PYTHONPATH=src uv run --group embedding python scripts/run_embedding_smoke.py
+
+reranker-smoke:
+	RERANKER__LOCAL_FILES_ONLY=false PYTHONPATH=src uv run --group reranker python scripts/run_reranker_smoke.py
 
 generation-smoke:
 	PYTHONPATH=src uv run python scripts/run_generation_smoke.py
