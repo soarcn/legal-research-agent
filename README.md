@@ -71,7 +71,8 @@ tests/
 
 Current prerequisites: Python 3.12, [uv](https://docs.astral.sh/uv/), and
 Docker Desktop (or another running Docker-compatible daemon). Ollama and local
-models are not required until their later P1 capability work.
+models are required only for the optional generation, embedding, and reranker
+capability checks; the deterministic repository gate does not require them.
 
 ```bash
 cp .env.example .env

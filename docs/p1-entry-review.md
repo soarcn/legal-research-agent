@@ -31,3 +31,6 @@ The P1 Alembic revision is an empty baseline by design. The first accepted domai
 5. Add unversioned `/ready` only after its dependency checks exist.
 
 P1 exits only when the clean-machine workflow and all P1 deterministic/smoke checks pass. The current `Go` decision authorizes starting P1; it is not a claim that P1 has already passed.
+
+P1 exit evidence and the formal phase decision are recorded in the
+[P1 exit report](p1-exit-report.md).
