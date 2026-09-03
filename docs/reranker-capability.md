@@ -28,3 +28,12 @@ not make a Hub request during future readiness work.
 Changing the model, revision, device, maximum sequence length, or batch size
 requires a versioned experiment decision. Candidate-k, final-k, latency, and
 retrieval-quality comparison remain P5 work.
+
+## Readiness integration
+
+Set `RERANKER_ENABLED=true` to include a bounded reranker probe in `/ready`.
+It scores two fixed non-legal passages and maps unavailable, timeout, loading,
+or invalid-output failures to the shared readiness vocabulary without exposing
+library details. It does not use legal source text or prove retrieval quality.
+Use `make api-with-model-capabilities` to enable it alongside the optional
+embedding probe.

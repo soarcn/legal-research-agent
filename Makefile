@@ -1,4 +1,4 @@
-.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding lint format typecheck test cov check audit migrate embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
+.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
 
 up:
 	docker compose up -d postgres weaviate
@@ -70,3 +70,6 @@ generation-smoke-lm-studio:
 
 api-with-embedding:
 	EMBEDDING_ENABLED=true PYTHONPATH=src uv run uvicorn apps.api.main:app --reload
+
+api-with-model-capabilities:
+	EMBEDDING_ENABLED=true RERANKER_ENABLED=true PYTHONPATH=src uv run uvicorn apps.api.main:app --reload

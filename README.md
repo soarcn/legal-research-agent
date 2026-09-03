@@ -90,13 +90,13 @@ the response contract, safe diagnostics, and troubleshooting.
 The default readiness composition checks PostgreSQL, Weaviate, and the one
 configured local generation provider through host-Python adapters. Generation
 readiness verifies only that its configured model is visible; it does not
-generate text. The P1 embedding probe is available with
-`EMBEDDING_ENABLED=true`, or through `make api-with-embedding`; it deliberately
-remains opt-in until generation and reranking capability work completes. A
-`200` proves only the configured runtime capabilities were reachable at that
-instant; it does not prove a Weaviate collection exists, a corpus is loaded,
-law is current, or a legal answer is reliable. Reranking and corpus ingestion
-are later P1/P3 work.
+generate text. The P1 embedding and reranker probes are opt-in with
+`EMBEDDING_ENABLED=true` and `RERANKER_ENABLED=true`, or together through
+`make api-with-model-capabilities`. They use fixed non-legal inputs and may
+load their models on the first `/ready` request. A `200` proves only the
+configured runtime capabilities were reachable at that instant; it does not
+prove a Weaviate collection exists, a corpus is loaded, law is current, or a
+legal answer is reliable. Corpus ingestion remains P3 work.
 See [local service lifecycle](docs/service-lifecycle.md) for non-destructive
 start/stop, opt-in real-service tests, recovery, and explicit reset commands.
 
