@@ -47,6 +47,21 @@ The workflow will route exact statute/case references to deterministic lookup; n
 
 `PydanticAI` is deliberately not responsible for parsing documents, owning the workflow, querying databases directly, or validating legal citations. Those stay in ordinary, testable Python components.
 
+## Frozen dataset snapshot
+
+Legal RAG Bench is stored only in ignored local files. Fetch its pinned source
+revision, then verify it on later runs without network access:
+
+```bash
+make dataset-fetch
+make dataset-verify
+```
+
+The command validates the committed hash/count contract and the restrictive
+licence policy before replacing files. It does not make the corpus current law,
+create database records, or build a search index. See
+[data and evaluation strategy](docs/data-and-evaluation.md).
+
 ## Repository layout
 
 ```text
