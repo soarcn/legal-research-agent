@@ -78,7 +78,7 @@ cp .env.example .env
 uv sync --locked --group dev
 make up
 make migrate
-uv run uvicorn apps.api.main:app --reload
+make api
 ```
 
 Check the running API at `http://127.0.0.1:8000/health` and its configured
@@ -87,11 +87,14 @@ the API process is alive; `/ready` returns `503` when a configured capability
 is unavailable. See [service liveness and readiness](docs/readiness.md) for
 the response contract, safe diagnostics, and troubleshooting.
 
-The current readiness composition checks PostgreSQL and Weaviate through their
-host-Python adapters. A `200` proves those two configured runtime capabilities
-were reachable at that instant; it does not prove a Weaviate collection exists,
-a corpus is loaded, law is current, or a legal answer is reliable. Ollama,
-LM Studio, embeddings, reranking, and corpus ingestion are later P1/P3 work.
+The default readiness composition checks PostgreSQL and Weaviate through their
+host-Python adapters. The P1 embedding probe is available with
+`EMBEDDING_ENABLED=true`, or through `make api-with-embedding`; it deliberately
+remains opt-in until generation and reranking capability work completes. A
+`200` proves only the configured runtime capabilities were reachable at that
+instant; it does not prove a Weaviate collection exists, a corpus is loaded,
+law is current, or a legal answer is reliable. Ollama, LM Studio, reranking,
+and corpus ingestion are later P1/P3 work.
 See [local service lifecycle](docs/service-lifecycle.md) for non-destructive
 start/stop, opt-in real-service tests, recovery, and explicit reset commands.
 
@@ -108,6 +111,18 @@ Install local models separately when the generation and retrieval components are
 ollama pull qwen3:8b  # example development model; not yet selected as the final default
 ollama pull bge-m3
 ```
+
+The P1 dense BGE-M3 host adapter is separate from Ollama. Install its optional
+runtime and run the capability check only when working on embeddings:
+
+```bash
+uv sync --locked --group embedding
+make embedding-smoke
+```
+
+The check downloads the pinned model on first use and writes a redacted local
+report; it does not ingest the corpus or run during CI. See
+[BGE-M3 embedding capability](docs/embedding-capability.md).
 
 Run the deterministic quality gate, then audit the installed Python dependencies:
 

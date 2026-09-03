@@ -1,4 +1,4 @@
-.PHONY: up down services-status reset-postgres reset-weaviate api lint format typecheck test cov check audit migrate
+.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding lint format typecheck test cov check audit migrate embedding-smoke
 
 up:
 	docker compose up -d postgres weaviate
@@ -24,7 +24,7 @@ reset-weaviate:
 	docker volume rm legal-research-agent-weaviate-data
 
 api:
-	uv run uvicorn apps.api.main:app --reload
+	PYTHONPATH=src uv run uvicorn apps.api.main:app --reload
 
 lint:
 	uv run ruff check .
@@ -52,3 +52,9 @@ audit:
 
 migrate:
 	uv run alembic upgrade head
+
+embedding-smoke:
+	EMBEDDING__LOCAL_FILES_ONLY=false PYTHONPATH=src uv run --group embedding python scripts/run_embedding_smoke.py
+
+api-with-embedding:
+	EMBEDDING_ENABLED=true PYTHONPATH=src uv run uvicorn apps.api.main:app --reload

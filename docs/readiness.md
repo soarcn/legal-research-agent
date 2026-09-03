@@ -85,12 +85,19 @@ semantics; a real-service `200` proves only these two runtime connections at
 that instant. Neither establishes an indexed corpus, legal completeness,
 currency, or answer correctness.
 
-Ollama, embedding, reranking, and OpenAI-compatible provider probes remain
-later P1 work. P1.5 provides the typed active-provider configuration and the
-composition seam for one `generation` probe, but does not register a network
-adapter yet. P1.6 supplies and validates that adapter. Each later capability
-must document its timeout and configuration and add a focused test before it
-becomes a configured default capability.
+P1.5 provides the typed active-provider configuration and the composition seam
+for one `generation` probe, but does not register a network adapter yet. P1.6
+supplies and validates that adapter.
+
+Embedding capability is opt-in during P1 component work. With
+`EMBEDDING_ENABLED=true`, the first `/ready` call can load BGE-M3 and run one
+fixed non-legal probe, so it may take materially longer than subsequent calls;
+`READINESS_TIMEOUT_SECONDS` defaults to 60. See
+[BGE-M3 embedding capability](embedding-capability.md). Ollama, reranking, and
+OpenAI-compatible provider probes remain later P1 work. P1 exit enables all
+accepted capabilities together. Each addition must document its timeout and
+configuration and add a focused test before it becomes a configured default
+capability.
 
 ## Local verification
 
@@ -122,7 +129,7 @@ recovery, and the destructive reset confirmation required for each service.
 For a manual HTTP check, start the API and query both endpoints:
 
 ```bash
-uv run uvicorn apps.api.main:app --reload
+make api
 curl -i http://127.0.0.1:8000/health
 curl -i http://127.0.0.1:8000/ready
 ```

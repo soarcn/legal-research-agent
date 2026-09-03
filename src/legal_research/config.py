@@ -1,17 +1,33 @@
-"""Typed runtime configuration.
-
-Generation configuration deliberately describes one active provider. Provider
-selection is never inferred from an endpoint: switching between Ollama and an
-OpenAI-compatible runtime is an explicit configuration change.
-"""
+"""Typed runtime configuration."""
 
 from enum import StrEnum
 from functools import lru_cache
-from typing import Annotated
+from typing import Annotated, Literal
 from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class EmbeddingModelConfig(BaseModel):
+    """Fixed dense BGE-M3 settings that form the future vector-index contract."""
+
+    model_id: str = "BAAI/bge-m3"
+    revision: str = "3806044eb869c8756693584f7eb5dd04ab2bdd95"
+    device: str = "mps"
+    batch_size: int = Field(default=4, ge=1, le=64)
+    normalize: bool = True
+    expected_dimension: int = Field(default=1024, ge=1)
+    pooling: Literal["dense"] = "dense"
+    max_sequence_length: int = Field(default=8192, ge=1)
+    local_files_only: bool = True
+
+    @field_validator("revision")
+    @classmethod
+    def revision_must_be_a_commit_sha(cls, value: str) -> str:
+        if len(value) != 40 or any(character not in "0123456789abcdef" for character in value):
+            raise ValueError("Embedding revision must be a 40-character lowercase commit SHA.")
+        return value
 
 
 class GenerationProvider(StrEnum):
@@ -25,7 +41,6 @@ class GenerationCapabilities(BaseModel):
     """Features explicitly advertised by the configured provider/runtime."""
 
     model_config = ConfigDict(frozen=True)
-
     text_generation: bool = True
     structured_output: bool = False
     tool_calling: bool = False
@@ -36,7 +51,6 @@ class GenerationProviderConfig(BaseModel):
     """Validated configuration for the one generation provider used at runtime."""
 
     model_config = ConfigDict(frozen=True)
-
     provider: GenerationProvider
     model: str
     base_url: str
@@ -47,59 +61,50 @@ class GenerationProviderConfig(BaseModel):
     @field_validator("model")
     @classmethod
     def model_must_not_be_blank(cls, value: str) -> str:
-        """Reject an ambiguous model before an adapter can issue a request."""
-        stripped_value = value.strip()
-        if not stripped_value:
-            msg = "generation model must not be blank"
-            raise ValueError(msg)
-        return stripped_value
+        value = value.strip()
+        if not value:
+            raise ValueError("generation model must not be blank")
+        return value
 
     @field_validator("base_url")
     @classmethod
     def base_url_must_be_safe_http_endpoint(cls, value: str) -> str:
-        """Accept only absolute HTTP(S) endpoints without embedded secrets."""
-        stripped_value = value.strip()
-        parsed = urlsplit(stripped_value)
+        value = value.strip()
+        parsed = urlsplit(value)
         if parsed.scheme not in {"http", "https"} or not parsed.hostname:
-            msg = "generation base URL must be an absolute HTTP(S) endpoint"
-            raise ValueError(msg)
+            raise ValueError("generation base URL must be an absolute HTTP(S) endpoint")
         if parsed.username or parsed.password or parsed.query or parsed.fragment:
-            msg = "generation base URL must not contain credentials, query parameters, or fragments"
-            raise ValueError(msg)
+            raise ValueError(
+                "generation base URL must not contain credentials, query parameters, or fragments"
+            )
         try:
             _ = parsed.port
         except ValueError as error:
-            msg = "generation base URL contains an invalid port"
-            raise ValueError(msg) from error
-        return stripped_value.rstrip("/")
+            raise ValueError("generation base URL contains an invalid port") from error
+        return value.rstrip("/")
 
     @field_validator("api_key", mode="before")
     @classmethod
     def api_key_must_not_be_blank(cls, value: object) -> object:
-        """Allow absent keys while rejecting accidentally configured blank keys."""
         if isinstance(value, str):
             if not value.strip():
-                msg = "generation API key must not be blank when configured"
-                raise ValueError(msg)
+                raise ValueError("generation API key must not be blank when configured")
             return value.strip()
         if isinstance(value, SecretStr) and not value.get_secret_value().strip():
-            msg = "generation API key must not be blank when configured"
-            raise ValueError(msg)
+            raise ValueError("generation API key must not be blank when configured")
         return value
 
 
 class Settings(BaseSettings):
     """Runtime settings loaded from environment variables and `.env`."""
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
-
+    model_config = SettingsConfigDict(env_file=".env", env_nested_delimiter="__", extra="ignore")
     app_env: str = "development"
     log_level: str = "INFO"
     database_url: str = "postgresql+asyncpg://legal_agent:legal_agent@localhost:5432/legal_agent"
     weaviate_url: str = "http://localhost:8080"
     weaviate_grpc_port: int = 50051
     corpus_source_snapshot_id: str = "legal-rag-bench@db0b31dc6d195ce9916897e1ac5e4e6209736c8a"
-
     generation_provider: GenerationProvider = GenerationProvider.OLLAMA
     generation_model: str = "qwen3:8b"
     generation_base_url: str = "http://localhost:11434"
@@ -109,10 +114,12 @@ class Settings(BaseSettings):
     generation_supports_structured_output: bool = False
     generation_supports_tool_calling: bool = False
     generation_supports_streaming: bool = False
+    embedding: EmbeddingModelConfig = EmbeddingModelConfig()
+    embedding_enabled: bool = False
+    readiness_timeout_seconds: float = Field(default=60.0, gt=0, le=300)
 
     @model_validator(mode="after")
     def active_generation_config_must_be_valid(self) -> "Settings":
-        """Fail at settings construction instead of during a provider call."""
         _ = self.generation_provider_config
         return self
 

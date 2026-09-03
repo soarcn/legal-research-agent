@@ -1,14 +1,11 @@
-"""Application composition for host-runtime capabilities.
-
-The API transport receives a ``ReadinessService`` rather than constructing
-database or search clients itself. This keeps the HTTP boundary thin while
-giving the process one place to own lifecycle-managed infrastructure.
-"""
+"""Application composition for host-runtime capabilities."""
 
 from dataclasses import dataclass
 
+from legal_research.adapters.embedding import BgeM3EmbeddingProvider
 from legal_research.adapters.postgres import AsyncPostgresDatabase, PostgresReadinessProbe
 from legal_research.adapters.weaviate import WeaviateReadinessProbe
+from legal_research.application.embedding_readiness import EmbeddingReadinessProbe
 from legal_research.application.generation_readiness import GenerationReadinessProbe
 from legal_research.application.readiness import ReadinessService
 from legal_research.config import Settings
@@ -24,7 +21,6 @@ class ReadinessRuntime:
 
     async def close(self) -> None:
         """Release host-process resources during application shutdown."""
-
         await self._postgres_database.dispose()
 
 
@@ -33,8 +29,7 @@ def build_readiness_runtime(
     *,
     generation_provider: GenerationReadinessProvider | None = None,
 ) -> ReadinessRuntime:
-    """Compose P1 capabilities; register generation only when an adapter is supplied."""
-
+    """Compose accepted P1 probes without loading optional models until checked."""
     postgres_database = AsyncPostgresDatabase(settings.database_url)
     probes = [
         PostgresReadinessProbe(postgres_database),
@@ -50,5 +45,7 @@ def build_readiness_runtime(
                 provider=generation_provider,
             )
         )
-    service = ReadinessService(probes=probes)
+    if settings.embedding_enabled:
+        probes.append(EmbeddingReadinessProbe(BgeM3EmbeddingProvider(settings.embedding)))
+    service = ReadinessService(probes=probes, timeout_seconds=settings.readiness_timeout_seconds)
     return ReadinessRuntime(service=service, _postgres_database=postgres_database)
