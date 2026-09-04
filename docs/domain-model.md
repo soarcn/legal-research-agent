@@ -20,3 +20,10 @@ does not support historical-law answers.
 Evidence uses one of four verifiable states: `supported`,
 `partially_supported`, `unsupported`, or `conflicting`. The model does not
 contain a numeric legal-confidence field.
+
+## PostgreSQL boundary
+
+P2.4 persists `source_snapshots`, `source_passages`, `benchmark_questions`,
+`ingestion_jobs`, and `research_runs` in PostgreSQL. These are the authoritative
+provenance and audit records. Weaviate remains empty until P3 and will contain
+only a rebuildable derived index.
