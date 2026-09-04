@@ -14,6 +14,7 @@ P0 is complete when these documents are current and reviewed:
 - [Service liveness and readiness](readiness.md)
 - [PostgreSQL runtime capability](postgresql.md)
 - [Weaviate runtime capability](weaviate.md)
+- [Weaviate v1 derived-index schema](weaviate-schema.md)
 - [BGE-M3 embedding capability](embedding-capability.md)
 - [P3 source-passage embedding adapter](embedding-capability.md#p3-source-passage-adapter)
 - [BGE reranker capability](reranker-capability.md)
