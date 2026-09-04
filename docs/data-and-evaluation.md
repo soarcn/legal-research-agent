@@ -88,6 +88,22 @@ This split is an internal project protocol, not an official split published by L
 
 ### Retrieval evaluator
 
+P4 starts through `SplitAwareBenchmarkLoader`. It exposes only retrieval fields
+(`question`, gold source-passage ID, split, benchmark ID, and source snapshot
+ID): source reference answers are deliberately not part of a retrieval case.
+Development is the default split, validation requires explicit selection, and
+the loader rejects holdout before it loads source QA records. Holdout access is
+implemented only through the separate, audited P8 path.
+
+The canonical frozen split manifests are committed in `evals/splits/`. An
+operator can confirm the permitted case selection without printing question
+text or reference answers:
+
+```bash
+make benchmark-development
+make benchmark-validation
+```
+
 The fast evaluator runs without answer generation or an Agent. It reports:
 
 - Recall@1, Recall@5, and Recall@10;
