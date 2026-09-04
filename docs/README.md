@@ -22,6 +22,7 @@ P0 is complete when these documents are current and reviewed:
 - [Licence register](licence-register.md)
 - [P2 exit report](p2-exit-report.md)
 - [P3 source-loader boundary](data-and-evaluation.md#dataset-boundary)
+- [Future-source section-aware chunking](future-source-chunking.md)
 - [BGE-M3 reference capability report](capability-reports/embedding-bge-m3-reference.md)
 - [Generation-provider configuration](generation-providers.md)
 - [Local generation capability reference report](capability-reports/generation-local-reference.md)

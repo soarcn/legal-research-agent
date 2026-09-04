@@ -1,5 +1,6 @@
 """Legal research domain models, value objects, and protocols."""
 
+from legal_research.domain.chunking import DerivedPassage, FutureSourceSection
 from legal_research.domain.identifiers import (
     SourcePassageIdentity,
     future_derived_passage_id,
@@ -19,7 +20,9 @@ from legal_research.domain.models import (
 
 __all__ = [
     "BenchmarkQuestion",
+    "DerivedPassage",
     "EvidenceState",
+    "FutureSourceSection",
     "IngestionJob",
     "IngestionJobStatus",
     "ResearchRun",
