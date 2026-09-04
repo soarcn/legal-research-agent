@@ -35,6 +35,15 @@ the ignored raw files. A failure leaves an existing valid local snapshot in
 place. `dataset-verify` performs the same content checks without network
 access. Neither command indexes, chunks, embeds, or redistributes the corpus.
 
+P3.1's `LegalRagBenchSourceLoader` is the next, still side-effect-free step:
+it first performs the same local verification, then maps the raw JSONL into
+immutable `SourceSnapshot`, unchanged `SourcePassage`, and
+`BenchmarkQuestion` values. It performs no network request, database write,
+chunking, embedding, Weaviate call, or model call. A passage's `content_sha256`
+is a SHA-256 of its canonical source record (all source-visible fields, not
+JSONL whitespace), while the manifest's corpus hash remains the integrity hash
+for the complete upstream file.
+
 Each corpus row is a source-provided passage with `id`, `title`, `text`, and an
 optional `footnotes` field. For `legal-rag-benchmark-v1`, that unchanged Source
 Passage is the retrieval and scoring unit because QA gold labels point directly
