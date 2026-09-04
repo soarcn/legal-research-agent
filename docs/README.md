@@ -15,6 +15,7 @@ P0 is complete when these documents are current and reviewed:
 - [PostgreSQL runtime capability](postgresql.md)
 - [Weaviate runtime capability](weaviate.md)
 - [BGE-M3 embedding capability](embedding-capability.md)
+- [P3 source-passage embedding adapter](embedding-capability.md#p3-source-passage-adapter)
 - [BGE reranker capability](reranker-capability.md)
 - [P1 exit report](p1-exit-report.md)
 - [P2 domain model](domain-model.md)
