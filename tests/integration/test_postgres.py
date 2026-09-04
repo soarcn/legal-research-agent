@@ -56,7 +56,7 @@ async def test_async_postgres_adapter_proves_connection_commit_and_rollback() ->
 
 
 @pytest.mark.asyncio
-async def test_empty_alembic_baseline_creates_no_legal_domain_tables() -> None:
+async def test_alembic_head_creates_the_accepted_p2_authoritative_schema() -> None:
     source_url = make_url(get_settings().database_url)
     baseline_database_name = f"p1_baseline_{uuid4().hex}"
     baseline_url = source_url.set(database=baseline_database_name)
@@ -92,7 +92,14 @@ async def test_empty_alembic_baseline_creates_no_legal_domain_tables() -> None:
             )
         await admin_database.dispose()
 
-    assert tables == {"alembic_version"}
+    assert tables == {
+        "alembic_version",
+        "benchmark_questions",
+        "ingestion_jobs",
+        "research_runs",
+        "source_passages",
+        "source_snapshots",
+    }
 
 
 def _sync_url(database_url: URL) -> str:

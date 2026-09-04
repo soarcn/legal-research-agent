@@ -6,6 +6,7 @@ The repository remains private until every applicable item is complete.
 
 - [ ] Apache License 2.0 text is present.
 - [ ] `NOTICE` and third-party dependency/model/data attribution are complete.
+- [ ] [Licence register](licence-register.md) has been rechecked against every selected upstream revision.
 - [ ] Legal RAG Bench licence discrepancy is resolved or clearly documented under the stricter policy.
 - [ ] No raw or derived dataset content is redistributed contrary to its terms.
 - [ ] Model weights and caches are absent from the repository.

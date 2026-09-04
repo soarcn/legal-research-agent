@@ -1,0 +1,37 @@
+# P2 domain model
+
+P2 introduces immutable Python contracts before database persistence. Their job
+is to preserve what the frozen source actually says, not to invent legal
+metadata that Legal RAG Bench does not publish.
+
+| Model | Meaning | Important boundary |
+| --- | --- | --- |
+| `SourceSnapshot` | One acquired corpus revision and its provenance | It is not current law or a legal document version. |
+| `SourcePassage` | One unchanged source-provided retrieval unit | Its native ID remains the benchmark ID. |
+| `BenchmarkQuestion` | One source QA row and exact gold passage ID | It does not make the gold answer exhaustive evidence. |
+| `ResearchRun` | One observable workflow execution | It is not an Agent conversation or hidden reasoning trace. |
+| `IngestionJob` | Later ingestion lifecycle state | It does not persist anything until P2.4. |
+
+`SourceSnapshot.retrieved_at` records when the project obtained data. It is
+separate from a published corpus snapshot date and from legal effective dates.
+For v1, `legal_effective_at` is intentionally unavailable because the source
+does not support historical-law answers.
+
+Evidence uses one of four verifiable states: `supported`,
+`partially_supported`, `unsupported`, or `conflicting`. The model does not
+contain a numeric legal-confidence field.
+
+## PostgreSQL boundary
+
+P2.4 persists `source_snapshots`, `source_passages`, `benchmark_questions`,
+`ingestion_jobs`, and `research_runs` in PostgreSQL. These are the authoritative
+provenance and audit records. Weaviate remains empty until P3 and will contain
+only a rebuildable derived index.
+
+## Synthetic fixture boundary
+
+[`evals/golden_documents/v1.json`](../evals/golden_documents/v1.json) is a
+fictional fixture for deterministic P2 tests. It distinguishes a source
+snapshot from document versions, preserves nested section paths, and includes
+duplicate text in different source locations. It does not add legal metadata
+to Legal RAG Bench or contribute to any benchmark metric.

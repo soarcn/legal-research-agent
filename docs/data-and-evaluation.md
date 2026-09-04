@@ -21,9 +21,34 @@ The v1 corpus is [Legal RAG Bench](https://huggingface.co/datasets/isaacus/legal
 
 Raw corpus files live under `data/raw/`, are ignored by Git, and must not be redistributed with this repository. The manifest records source revision, hashes, counts, retrieval time, and licence policy.
 
-Each corpus row is a source-provided passage with `id`, `title`, `text`, and `footnotes`. For `legal-rag-benchmark-v1`, that unchanged Source Passage is the retrieval and scoring unit because QA gold labels point directly to its source ID. The primary benchmark does not re-chunk these passages. Chunking experiments use a separate versioned index and evaluation protocol and must not report source-passage Recall@k unless an explicit, reviewed mapping preserves the gold semantics.
+Fetch or verify the frozen snapshot with:
+
+```bash
+make dataset-fetch
+make dataset-verify
+```
+
+`dataset-fetch` uses immutable Hugging Face URLs containing the committed
+revision. It validates the source-card licence metadata, file hashes, JSONL
+shape, source-native IDs, and QA gold references before atomically replacing
+the ignored raw files. A failure leaves an existing valid local snapshot in
+place. `dataset-verify` performs the same content checks without network
+access. Neither command indexes, chunks, embeds, or redistributes the corpus.
+
+Each corpus row is a source-provided passage with `id`, `title`, `text`, and an
+optional `footnotes` field. For `legal-rag-benchmark-v1`, that unchanged Source
+Passage is the retrieval and scoring unit because QA gold labels point directly
+to its source ID. The primary benchmark does not re-chunk these passages.
+Chunking experiments use a separate versioned index and evaluation protocol and
+must not report source-passage Recall@k unless an explicit, reviewed mapping
+preserves the gold semantics.
 
 The dataset metadata declares `CC BY-NC-SA 4.0`, while its prose licence section says `CC BY-NC 4.0`. This project applies the more restrictive `CC BY-NC-SA 4.0` policy until clarified. It is a non-commercial learning project.
+
+The source, model, and synthetic-fixture handling rules are recorded in the
+[licence register](licence-register.md). The register is an attribution and
+release-control record; it does not override upstream terms or provide legal
+advice.
 
 ## Frozen benchmark split
 
