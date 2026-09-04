@@ -20,3 +20,18 @@ provenance and identity tests only. It is deliberately separate from the
 frozen benchmark and must not be used to report retrieval quality.
 
 Do not change validation or holdout semantics in place. Once the v1 holdout is used formally it is consumed; reshuffling the same questions does not create a new holdout. Follow [the benchmark governance policy](../docs/data-and-evaluation.md).
+
+# Evaluation assets
+
+`splits/` contains the frozen, project-defined v1 question-ID partitions.
+They are source-controlled evaluation protocol, not downloaded corpus data.
+
+For P4, use only the permitted loader commands:
+
+```bash
+make benchmark-development
+make benchmark-validation
+```
+
+There is intentionally no holdout command. The v1 holdout is available only
+through the audited P8 final-evaluation path.
