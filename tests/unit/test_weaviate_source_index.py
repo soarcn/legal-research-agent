@@ -151,6 +151,7 @@ async def test_index_uses_stable_source_identity_and_updates_a_retry() -> None:
     ).key
     assert collections.collection.data.inserted[0]["uuid"] == stable_id
     assert collections.collection.data.updated[0]["uuid"] == stable_id
+    assert collections.collection.data.inserted[0]["vector"] == [1.0, 2.0]
     assert collections.collection.data.inserted[0]["properties"] == {
         "sourceSnapshotId": "snapshot",
         "passageId": "source-1",
