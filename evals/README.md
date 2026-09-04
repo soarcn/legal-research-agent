@@ -15,4 +15,8 @@ The current committed split manifests contain IDs only. Raw Legal RAG Bench data
 
 The primary v1 retrieval unit is the unchanged source passage. Re-chunked or future-source experiments live under a separately versioned corpus/index and cannot silently reuse source-passage gold scoring.
 
+The P2 [`golden_documents/`](golden_documents/) fixture is fictional input for
+provenance and identity tests only. It is deliberately separate from the
+frozen benchmark and must not be used to report retrieval quality.
+
 Do not change validation or holdout semantics in place. Once the v1 holdout is used formally it is consumed; reshuffling the same questions does not create a new holdout. Follow [the benchmark governance policy](../docs/data-and-evaluation.md).

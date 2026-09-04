@@ -27,3 +27,11 @@ P2.4 persists `source_snapshots`, `source_passages`, `benchmark_questions`,
 `ingestion_jobs`, and `research_runs` in PostgreSQL. These are the authoritative
 provenance and audit records. Weaviate remains empty until P3 and will contain
 only a rebuildable derived index.
+
+## Synthetic fixture boundary
+
+[`evals/golden_documents/v1.json`](../evals/golden_documents/v1.json) is a
+fictional fixture for deterministic P2 tests. It distinguishes a source
+snapshot from document versions, preserves nested section paths, and includes
+duplicate text in different source locations. It does not add legal metadata
+to Legal RAG Bench or contribute to any benchmark metric.
