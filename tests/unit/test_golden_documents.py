@@ -78,5 +78,12 @@ def test_golden_fixture_versions_have_one_document_identity_and_distinct_version
     }
 
     assert len(version_ids) == 2
+    assert version_ids == {
+        future_document_version_id(
+            document_id=document_id,
+            source_content_sha256=version["source_content_sha256"],
+        )
+        for version in versioned_document["versions"]
+    }
     assert versioned_document["versions"][0]["effective_to"] == "2011-12-31"
     assert versioned_document["versions"][1]["effective_from"] == "2012-01-01"

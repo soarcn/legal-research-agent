@@ -45,6 +45,11 @@ preserves the gold semantics.
 
 The dataset metadata declares `CC BY-NC-SA 4.0`, while its prose licence section says `CC BY-NC 4.0`. This project applies the more restrictive `CC BY-NC-SA 4.0` policy until clarified. It is a non-commercial learning project.
 
+The source, model, and synthetic-fixture handling rules are recorded in the
+[licence register](licence-register.md). The register is an attribution and
+release-control record; it does not override upstream terms or provide legal
+advice.
+
 ## Frozen benchmark split
 
 The source publishes only a `test` split. For this private learning project, the 100 records are deterministically partitioned once and treated as `legal-rag-benchmark-v1`:

@@ -19,6 +19,8 @@ P0 is complete when these documents are current and reviewed:
 - [P1 exit report](p1-exit-report.md)
 - [P2 domain model](domain-model.md)
 - [Stable identity rules](stable-identities.md)
+- [Licence register](licence-register.md)
+- [P2 exit report](p2-exit-report.md)
 - [BGE-M3 reference capability report](capability-reports/embedding-bge-m3-reference.md)
 - [Generation-provider configuration](generation-providers.md)
 - [Local generation capability reference report](capability-reports/generation-local-reference.md)
