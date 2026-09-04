@@ -72,6 +72,33 @@ class WeaviateSourcePassageIndex:
             with suppress(Exception):
                 await client.close()
 
+    async def delete_collection(self) -> None:
+        """Delete only the named derived collection; callers own confirmation policy."""
+        client = self._client_factory()
+        try:
+            await client.connect()
+            collections = client.collections
+            if await collections.exists(LEGAL_PASSAGE_V1_SCHEMA.collection_name):  # type: ignore[attr-defined]
+                await collections.delete(LEGAL_PASSAGE_V1_SCHEMA.collection_name)  # type: ignore[attr-defined]
+        finally:
+            with suppress(Exception):
+                await client.close()
+
+    async def count(self) -> int:
+        """Return only the derived collection object count for rebuild verification."""
+        client = self._client_factory()
+        try:
+            await client.connect()
+            collections = client.collections
+            if not await collections.exists(LEGAL_PASSAGE_V1_SCHEMA.collection_name):  # type: ignore[attr-defined]
+                return 0
+            collection = collections.get(LEGAL_PASSAGE_V1_SCHEMA.collection_name)  # type: ignore[attr-defined]
+            result = await collection.aggregate.over_all(total_count=True)  # type: ignore[attr-defined]
+            return int(result.total_count)
+        finally:
+            with suppress(Exception):
+                await client.close()
+
     async def upsert(
         self,
         *,
@@ -80,8 +107,8 @@ class WeaviateSourcePassageIndex:
         source_passages: LoadedLegalRagBench,
     ) -> None:
         source_by_id = {passage.passage_id: passage for passage in source_passages.passages}
-        if len(source_by_id) != len(passages):
-            raise ValueError("Every indexed vector must map to exactly one source passage.")
+        if len({passage.passage_id for passage in passages}) != len(passages):
+            raise ValueError("An index write cannot contain duplicate source passage IDs.")
         client = self._client_factory()
         try:
             await client.connect()
@@ -110,7 +137,7 @@ class WeaviateSourcePassageIndex:
                     await collection.data.insert(  # type: ignore[attr-defined]
                         properties=properties,
                         uuid=stable_id,
-                        vector=embedded.vector,
+                        vector=list(embedded.vector),
                     )
                 except Exception as error:
                     if not _is_already_exists(error):
@@ -118,7 +145,7 @@ class WeaviateSourcePassageIndex:
                     await collection.data.update(  # type: ignore[attr-defined]
                         uuid=stable_id,
                         properties=properties,
-                        vector=embedded.vector,
+                        vector=list(embedded.vector),
                     )
         finally:
             with suppress(Exception):

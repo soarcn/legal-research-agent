@@ -1,4 +1,4 @@
-.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate dataset-fetch dataset-verify ingest embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
+.PHONY: up down services-status reset-postgres reset-weaviate rebuild-index api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate dataset-fetch dataset-verify ingest embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
 
 up:
 	docker compose up -d postgres weaviate
@@ -22,6 +22,11 @@ reset-weaviate:
 	docker compose stop weaviate
 	docker compose rm --force weaviate
 	docker volume rm legal-research-agent-weaviate-data
+
+# Destructive to the named derived collection only; never touches PostgreSQL or raw source files.
+rebuild-index:
+	test "$(CONFIRM_REBUILD_INDEX)" = "legal-passage-v1"
+	PYTHONPATH=src uv run --group embedding python scripts/rebuild_legal_rag_index.py
 
 api:
 	PYTHONPATH=src uv run uvicorn apps.api.main:app --reload

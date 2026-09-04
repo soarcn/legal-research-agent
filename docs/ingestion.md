@@ -31,3 +31,17 @@ If a source persistence, embedding, or index operation fails, the job records on
 - The raw files must first pass `make dataset-verify`.
 - PostgreSQL remains authoritative; Weaviate is an index that P3.6 will rebuild independently.
 - This command indexes source-native v1 passages unchanged. It does not use P3.2 future-source chunking.
+
+## Rebuild the derived index
+
+P3.6 will use the following explicit command to delete and recreate only the
+named `LegalPassageV1` Weaviate collection. PostgreSQL, raw source files, the
+manifest, and benchmark split files remain untouched:
+
+```bash
+CONFIRM_REBUILD_INDEX=legal-passage-v1 make rebuild-index
+```
+
+The confirmation value is intentionally exact. The command re-verifies local
+source bytes, builds vectors before deleting the old derived collection, then
+checks that the final object count matches the verified source count.
