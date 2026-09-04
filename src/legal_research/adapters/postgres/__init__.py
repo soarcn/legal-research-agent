@@ -6,3 +6,6 @@ from legal_research.adapters.postgres.connection import (
 )
 
 __all__ = ["AsyncPostgresDatabase", "PostgresReadinessProbe"]
+from legal_research.adapters.postgres.source_ingestion import PostgresSourceIngestionRepository
+
+__all__ = ["PostgresSourceIngestionRepository"]

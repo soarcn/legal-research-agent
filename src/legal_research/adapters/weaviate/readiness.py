@@ -44,7 +44,7 @@ class WeaviateReadinessProbe:
         grpc_port: int = 50051,
     ) -> "WeaviateReadinessProbe":
         """Build a probe for an HTTP(S) endpoint and its configured gRPC port."""
-        connection_params = _connection_params_from_url(weaviate_url, grpc_port=grpc_port)
+        connection_params = connection_params_from_url(weaviate_url, grpc_port=grpc_port)
 
         def create_client() -> WeaviateAsyncClient:
             return WeaviateAsyncClient(connection_params=connection_params)
@@ -67,7 +67,7 @@ class WeaviateReadinessProbe:
         return ProbeResult.ready(name=self.name)
 
 
-def _connection_params_from_url(weaviate_url: str, *, grpc_port: int) -> ConnectionParams:
+def connection_params_from_url(weaviate_url: str, *, grpc_port: int) -> ConnectionParams:
     """Translate a configured HTTP(S) URL to the v4 client's explicit endpoints."""
     parsed = urlparse(weaviate_url)
     if parsed.scheme not in {"http", "https"} or parsed.hostname is None:

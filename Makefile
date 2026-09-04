@@ -1,4 +1,4 @@
-.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate dataset-fetch dataset-verify embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
+.PHONY: up down services-status reset-postgres reset-weaviate api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate dataset-fetch dataset-verify ingest embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
 
 up:
 	docker compose up -d postgres weaviate
@@ -58,6 +58,9 @@ dataset-fetch:
 
 dataset-verify:
 	PYTHONPATH=src uv run python scripts/fetch_legal_rag_bench.py --verify-only
+
+ingest:
+	PYTHONPATH=src uv run --group embedding python scripts/ingest_legal_rag_bench.py
 
 embedding-smoke:
 	EMBEDDING__LOCAL_FILES_ONLY=false PYTHONPATH=src uv run --group embedding python scripts/run_embedding_smoke.py
