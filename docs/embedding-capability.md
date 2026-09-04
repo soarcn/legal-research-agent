@@ -24,6 +24,17 @@ calculate retrieval metrics. The [BGE-M3 model card](https://huggingface.co/BAAI
 documents `SentenceTransformer` as a supported loading path and is the source
 for this model selection.
 
+## P3 source-passage adapter
+
+`SourcePassageEmbedder` sits above this provider. It accepts unchanged P3.1
+`SourcePassage` values, sends only their source `text` in explicit configured
+batches, and returns vectors in the same source order. The derived result
+retains the source snapshot ID, passage ID, source-record hash, and the model
+revision, dimension, device, normalisation, and batch-size provenance needed
+for a later index write. It rejects a provider response whose model identity,
+dimension, or vector count differs from the fixed configuration. It has no
+PostgreSQL or Weaviate dependency.
+
 ## Installation and smoke check
 
 The heavyweight runtime is optional so the normal deterministic gate remains
