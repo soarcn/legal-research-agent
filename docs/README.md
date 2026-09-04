@@ -17,6 +17,7 @@ P0 is complete when these documents are current and reviewed:
 - [BGE-M3 embedding capability](embedding-capability.md)
 - [BGE reranker capability](reranker-capability.md)
 - [P1 exit report](p1-exit-report.md)
+- [P2 domain model](domain-model.md)
 - [BGE-M3 reference capability report](capability-reports/embedding-bge-m3-reference.md)
 - [Generation-provider configuration](generation-providers.md)
 - [Local generation capability reference report](capability-reports/generation-local-reference.md)
