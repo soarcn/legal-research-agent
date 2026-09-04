@@ -59,7 +59,15 @@ make dataset-verify
 
 The command validates the committed hash/count contract and the restrictive
 licence policy before replacing files. It does not make the corpus current law,
-create database records, or build a search index. See
+create database records, or build a search index. To create authoritative
+source records and the rebuildable derived index after verification, run:
+
+```bash
+make migrate
+make ingest
+```
+
+See [source ingestion](docs/ingestion.md) and the
 [data and evaluation strategy](docs/data-and-evaluation.md).
 
 ## Repository layout
@@ -112,7 +120,8 @@ generate text. The P1 embedding and reranker probes are opt-in with
 load their models on the first `/ready` request. A `200` proves only the
 configured runtime capabilities were reachable at that instant; it does not
 prove a Weaviate collection exists, a corpus is loaded, law is current, or a
-legal answer is reliable. Corpus ingestion remains P3 work.
+legal answer is reliable. Source ingestion is an explicit local P3 operation;
+it is never triggered by readiness checks.
 See [local service lifecycle](docs/service-lifecycle.md) for non-destructive
 start/stop, opt-in real-service tests, recovery, and explicit reset commands.
 
