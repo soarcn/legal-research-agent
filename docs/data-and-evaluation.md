@@ -120,6 +120,11 @@ so a formal result cannot be overwritten.
 
 P4 establishes BM25 and dense baselines. P5 compares hybrid fusion, exact-reference lookup, and reranking while changing one variable at a time.
 
+The BM25 adapter always applies `sourceSnapshotId` and jurisdiction filters in
+Weaviate before ranking. Legal RAG Bench v1 has no authoritative effective-date
+metadata: supplying `effective_at` is rejected instead of being interpreted as
+a filter over the dataset retrieval timestamp.
+
 ### Answer reliability
 
 P6 adds:
