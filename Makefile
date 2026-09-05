@@ -1,4 +1,4 @@
-.PHONY: up down services-status reset-postgres reset-weaviate rebuild-index api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate dataset-fetch dataset-verify benchmark-development benchmark-validation baseline-bm25 baseline-dense demo-bm25 ingest embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
+.PHONY: up down services-status reset-postgres reset-weaviate rebuild-index api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate dataset-fetch dataset-verify benchmark-development benchmark-validation baseline-bm25 baseline-dense demo-bm25 demo-p5 ingest embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
 
 up:
 	docker compose up -d postgres weaviate
@@ -78,6 +78,9 @@ baseline-dense:
 
 demo-bm25:
 	PYTHONPATH=src uv run python scripts/demo_retrieval.py "self defence" --mode bm25
+
+demo-p5:
+	PYTHONPATH=src uv run --group embedding --group reranker python scripts/demo_retrieval.py "What are the elements of self defence and who bears the burden of proof?" --mode hybrid-rerank
 
 ingest:
 	PYTHONPATH=src uv run --group embedding python scripts/ingest_legal_rag_bench.py
