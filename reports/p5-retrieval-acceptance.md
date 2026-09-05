@@ -85,6 +85,12 @@ discarding background facts after a controlled development regression.
 
 ## Gate assessment and next action
 
+Exact-reference update: [the versioned suite](p5-exact-reference-acceptance.md)
+now passes 20/20 supported section references and 10/10 separate boundary
+cases against the full source corpus. The narrow exact-section gate is met;
+this supersedes the initial unmeasured status below. Natural-language retrieval
+and remaining P5 acceptance work are still tracked under #72.
+
 Update: the subsequent controlled [balanced-candidate comparison](p5-balanced-candidates.md)
 improves validation Recall@5 to 0.500 and MRR to 0.320 with 30 candidates.
 The table below is the historical initial gate assessment; the later result
