@@ -125,6 +125,10 @@ Weaviate before ranking. Legal RAG Bench v1 has no authoritative effective-date
 metadata: supplying `effective_at` is rejected instead of being interpreted as
 a filter over the dataset retrieval timestamp.
 
+Run development baselines with `make baseline-bm25` and `make baseline-dense`.
+They write ignored, schema-versioned local artifacts under `artifacts/`; a
+formal rerun must use a new experiment ID rather than overwriting a result.
+
 ### Answer reliability
 
 P6 adds:

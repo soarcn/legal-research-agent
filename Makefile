@@ -1,4 +1,4 @@
-.PHONY: up down services-status reset-postgres reset-weaviate rebuild-index api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate dataset-fetch dataset-verify benchmark-development benchmark-validation ingest embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
+.PHONY: up down services-status reset-postgres reset-weaviate rebuild-index api api-with-embedding api-with-model-capabilities lint format typecheck test cov check audit migrate dataset-fetch dataset-verify benchmark-development benchmark-validation baseline-bm25 baseline-dense ingest embedding-smoke reranker-smoke generation-smoke generation-smoke-ollama generation-smoke-lm-studio
 
 up:
 	docker compose up -d postgres weaviate
@@ -69,6 +69,12 @@ benchmark-development:
 
 benchmark-validation:
 	PYTHONPATH=src uv run python scripts/load_retrieval_benchmark.py --split validation
+
+baseline-bm25:
+	PYTHONPATH=src uv run python scripts/run_retrieval_baseline.py --mode bm25 --experiment-id retrieval-bm25-dev-v1
+
+baseline-dense:
+	PYTHONPATH=src uv run --group embedding python scripts/run_retrieval_baseline.py --mode dense --experiment-id retrieval-dense-dev-v1
 
 ingest:
 	PYTHONPATH=src uv run --group embedding python scripts/ingest_legal_rag_bench.py
