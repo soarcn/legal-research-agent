@@ -31,3 +31,7 @@ original-query validation baseline and unmet P5 gates still apply.
 Next investigation: measure candidate recall at larger retrieval depths before
 reranking, keeping the complete original question. Issue #72 remains open for
 this work and the required exact-reference suite.
+
+Follow-up: [candidate coverage](p5-candidate-coverage.md) found 39/60 gold
+passages in the top 100, establishing a 65% reranker ceiling for that candidate
+set and motivating an index/rank audit for the 21 remaining misses.
