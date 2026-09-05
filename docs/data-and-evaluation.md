@@ -137,6 +137,11 @@ weight, and every fused result retains its BM25 and dense ranks for audit.
 Formal P5 experiments vary `alpha` at `0.25`, `0.50`, and `0.75`; reranking
 experiments vary only its bounded candidate count. The evaluator exposes both
 settings explicitly, and records their resolved values in every artifact.
+The runner also offers experimental `--query-focus` final-question extraction,
+disabled by default. A matched development experiment reduced Recall@5 from
+0.350 to 0.300; it is retained for reproducibility, not recommended for normal
+retrieval. See `reports/p5-query-focus-experiment.md`. Query transformations
+are recorded in the artifact identity so the original input remains auditable.
 The v1 exact-reference resolver supports only source-native dotted section
 references; statute and case citations are explicitly unsupported until a
 future corpus supplies authoritative legal metadata.

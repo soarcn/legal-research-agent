@@ -2,7 +2,7 @@
 
 ## Decision
 
-**P5 implementation is complete; P5 is not accepted as a quality gate.** The
+**Core P5 components are implemented; P5 acceptance work is incomplete.** The
 hybrid, exact-reference, reranker, and rule-first router capabilities are in
 place and exercised locally. The frozen v1 validation results do not meet the
 project's retrieval gates, so P6 must not begin as though retrieval quality
@@ -65,14 +65,23 @@ The router is deterministic: dotted references use exact lookup; only clear
 two- or three-part English questions are decomposed; all other requests use a
 single semantic query. It does not use a model or an Agent loop.
 
-## Runtime limitation
+## Runtime evidence correction
 
-The normal local reranker batch size (`4`) exited before it wrote a 60-case
-development artifact. A constrained batch size (`1`) completed the 20-case
-validation run above. The resolved runtime settings are recorded in the
-artifact. This is an operational limitation to investigate, not evidence that
-the 60-case reranker experiment succeeded. No result has been fabricated or
-substituted.
+The earlier version of this report incorrectly interpreted partial command
+output as a process exit. Inspection now confirms complete 60-case artifacts:
+`p5-rerank-k10-development-v1` (batch 4) and
+`p5-rerank-k10-development-v3` (batch 1), both with Recall@5 0.317 and MRR
+0.276. There is no established batch-size runtime failure from those runs.
+The validation artifact above predates full runtime-configuration capture;
+its batch size 1 is supported by the recorded command, not its JSON identity.
+
+Also, the table above compares hybrid candidate-k 30 with reranker retrieval
+candidate-k 10. It is descriptive, not a controlled reranker-only ablation;
+equal aggregate recall does not prove that the candidate sets are equal.
+Future comparisons must fix retrieval depth when measuring reranker benefit.
+
+The subsequent [query-focus experiment](p5-query-focus-experiment.md) rejected
+discarding background facts after a controlled development regression.
 
 ## Gate assessment and next action
 

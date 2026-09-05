@@ -7,6 +7,7 @@ import asyncio
 import subprocess
 from dataclasses import asdict
 from pathlib import Path
+from typing import Any
 
 from legal_research.adapters.embedding import BgeM3EmbeddingProvider
 from legal_research.adapters.reranking import BgeM3RerankerProvider
@@ -23,6 +24,7 @@ from legal_research.application.hybrid_retrieval import (
     HybridSourcePassageRetriever,
 )
 from legal_research.application.legal_rag_bench_loader import LegalRagBenchSourceLoader
+from legal_research.application.query_focus import FactPatternQueryFocuser
 from legal_research.application.reranked_retrieval import (
     RerankConfiguration,
     SourcePassageReranker,
@@ -46,6 +48,9 @@ async def main() -> int:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--alpha", type=float, default=0.5)
     parser.add_argument("--candidate-k", type=int)
+    parser.add_argument(
+        "--query-focus", action="store_true", help="Experimental final-question extraction"
+    )
     parser.add_argument("--experiment-id", required=True)
     arguments = parser.parse_args()
     settings = get_settings()
@@ -56,6 +61,15 @@ async def main() -> int:
     cases = SplitAwareBenchmarkLoader(source_loader).load(
         Path("data/raw"), split=BenchmarkSplit(arguments.split)
     )
+    queries = {
+        case.question_id: (
+            FactPatternQueryFocuser().focus(case.question).retrieval_query
+            if arguments.query_focus
+            else case.question
+        )
+        for case in cases
+    }
+    configuration_identity: dict[str, Any]
     if arguments.mode == "bm25":
         configuration = Bm25RetrievalConfiguration(top_k=arguments.top_k)
         retriever = WeaviateBm25SourcePassageRetriever.from_url(
@@ -63,7 +77,7 @@ async def main() -> int:
         )
         results = [
             await retriever.retrieve(
-                query=case.question,
+                query=queries[case.question_id],
                 snapshot=source.snapshot,
                 jurisdiction=source.snapshot.jurisdiction,
                 configuration=configuration,
@@ -91,7 +105,7 @@ async def main() -> int:
         )
         results = [
             await retriever.retrieve(
-                query=case.question,
+                query=queries[case.question_id],
                 snapshot=source.snapshot,
                 jurisdiction=source.snapshot.jurisdiction,
                 configuration=configuration,
@@ -132,7 +146,7 @@ async def main() -> int:
         )
         hybrid_results = [
             await hybrid_retriever.retrieve(
-                query=case.question,
+                query=queries[case.question_id],
                 snapshot=source.snapshot,
                 jurisdiction=source.snapshot.jurisdiction,
                 configuration=hybrid_configuration,
@@ -158,7 +172,7 @@ async def main() -> int:
             reranker = SourcePassageReranker(BgeM3RerankerProvider(settings.reranker))
             reranked_results = [
                 await reranker.rerank(
-                    query=case.question,
+                    query=queries[case.question_id],
                     hybrid=hybrid_result,
                     source_passages=source.passages,
                     configuration=rerank_configuration,
@@ -182,6 +196,15 @@ async def main() -> int:
         configuration_identity["embedding_runtime"] = settings.embedding.model_dump(mode="json")
         if arguments.mode == "hybrid-rerank":
             configuration_identity["reranker_runtime"] = settings.reranker.model_dump(mode="json")
+    configuration_identity["query_focus"] = arguments.query_focus
+    configuration_identity["query_audit"] = [
+        {
+            "question_id": case.question_id,
+            "original": case.question,
+            "retrieval_query": queries[case.question_id],
+        }
+        for case in cases
+    ]
     code_revision = (
         await asyncio.to_thread(subprocess.check_output, ["git", "rev-parse", "HEAD"], text=True)
     ).strip()
