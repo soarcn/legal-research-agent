@@ -128,6 +128,8 @@ a filter over the dataset retrieval timestamp.
 Run development baselines with `make baseline-bm25` and `make baseline-dense`.
 They write ignored, schema-versioned local artifacts under `artifacts/`; a
 formal rerun must use a new experiment ID rather than overwriting a result.
+The recorded P4 result and its limitations are in
+[`reports/p4-retrieval-baseline.md`](../reports/p4-retrieval-baseline.md).
 
 ### Answer reliability
 
