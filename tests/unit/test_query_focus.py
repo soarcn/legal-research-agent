@@ -14,5 +14,12 @@ def test_focuser_keeps_short_and_multi_question_requests_unchanged() -> None:
     focuser = FactPatternQueryFocuser()
 
     assert focuser.focus("What is self defence?").applied is False
-    multi = " ".join(["Background."] * 20) + " What is self defence? Who bears the burden?"
+    multi = " ".join(["Detailed background."] * 25) + " What is self defence? Who bears the burden?"
     assert focuser.focus(multi).applied is False
+
+
+def test_focuser_preserves_trailing_context() -> None:
+    question = (
+        " ".join(["Detailed background."] * 25) + " What must be proved? Consider both parties."
+    )
+    assert FactPatternQueryFocuser().focus(question).retrieval_query == question

@@ -27,6 +27,13 @@ class FactPatternQueryFocuser:
         )
         questions = tuple(sentence for sentence in sentences if sentence.endswith("?"))
         final = questions[-1] if questions else ""
-        if len(original.split()) >= 40 and len(questions) == 1 and len(final.split()) >= 4:
+        if (
+            len(original.split()) >= 40
+            and original.count("?") == 1
+            and original.endswith("?")
+            and len(questions) == 1
+            and len(final.split()) >= 4
+            and final != original
+        ):
             return FocusedQuery(original, final, True)
         return FocusedQuery(original, original, False)
