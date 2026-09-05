@@ -113,3 +113,35 @@ async def test_bm25_retriever_queries_the_locally_indexed_source_snapshot() -> N
 
     assert result.source_snapshot_id == source.snapshot.source_snapshot_id
     assert len(result.passages) <= 3
+
+
+@pytest.mark.real_service
+async def test_dense_retriever_queries_the_locally_indexed_source_snapshot() -> None:
+    from legal_research.adapters.embedding import BgeM3EmbeddingProvider
+    from legal_research.adapters.weaviate.dense_retriever import (
+        DenseRetrievalConfiguration,
+        WeaviateDenseSourcePassageRetriever,
+    )
+    from legal_research.application.legal_rag_bench_loader import LegalRagBenchSourceLoader
+    from legal_research.config import Settings
+
+    settings = Settings()
+    source = LegalRagBenchSourceLoader.from_manifest(
+        Path("data/manifests/legal-rag-bench-v1.json")
+    ).load(Path("data/raw"))
+    result = await WeaviateDenseSourcePassageRetriever.from_url(
+        settings.weaviate_url,
+        grpc_port=settings.weaviate_grpc_port,
+        embedding_provider=BgeM3EmbeddingProvider(settings.embedding),
+        embedding_config=settings.embedding,
+    ).retrieve(
+        query=source.questions[0].question,
+        snapshot=source.snapshot,
+        jurisdiction="VIC",
+        configuration=DenseRetrievalConfiguration.from_embedding_config(
+            settings.embedding, top_k=3
+        ),
+    )
+
+    assert result.source_snapshot_id == source.snapshot.source_snapshot_id
+    assert len(result.passages) <= 3
