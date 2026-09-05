@@ -44,6 +44,8 @@ async def main() -> int:
     )
     parser.add_argument("--split", choices=("development", "validation"), default="development")
     parser.add_argument("--top-k", type=int, default=10)
+    parser.add_argument("--alpha", type=float, default=0.5)
+    parser.add_argument("--candidate-k", type=int)
     parser.add_argument("--experiment-id", required=True)
     arguments = parser.parse_args()
     settings = get_settings()
@@ -106,9 +108,10 @@ async def main() -> int:
         ]
         configuration_identity = asdict(configuration)
     else:
-        candidate_k = 30 if arguments.mode == "hybrid" else 20
+        candidate_k = arguments.candidate_k or (30 if arguments.mode == "hybrid" else 20)
         final_k = arguments.top_k if arguments.mode == "hybrid" else candidate_k
         hybrid_configuration = HybridRetrievalConfiguration(
+            alpha=arguments.alpha,
             candidate_k=candidate_k,
             final_k=final_k,
         )
