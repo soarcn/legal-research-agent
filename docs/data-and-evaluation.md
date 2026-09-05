@@ -112,6 +112,12 @@ The fast evaluator runs without answer generation or an Agent. It reports:
 - p50 and p95 latency;
 - per-case results and categorized failures.
 
+Each run is bound to an experiment ID, corpus hash, code revision, frozen
+benchmark identity, and canonicalized retrieval configuration hash. It writes
+schema-versioned `aggregate.json` and `per-case.json` artifacts to a new local
+`artifacts/<experiment_id>/` directory; a pre-existing directory is rejected
+so a formal result cannot be overwritten.
+
 P4 establishes BM25 and dense baselines. P5 compares hybrid fusion, exact-reference lookup, and reranking while changing one variable at a time.
 
 ### Answer reliability
