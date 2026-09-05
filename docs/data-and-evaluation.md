@@ -134,6 +134,9 @@ The recorded P4 result and its limitations are in
 P5 hybrid retrieval uses weighted reciprocal-rank fusion rather than directly
 adding BM25 scores to vector distances. The `alpha` setting controls dense
 weight, and every fused result retains its BM25 and dense ranks for audit.
+The v1 exact-reference resolver supports only source-native dotted section
+references; statute and case citations are explicitly unsupported until a
+future corpus supplies authoritative legal metadata.
 
 ### Answer reliability
 
