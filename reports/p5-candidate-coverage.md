@@ -29,8 +29,14 @@ reach the 80% gate with these candidates.
 The 21 missing development question IDs are: 29, 12, 18, 7, 53, 9, 93, 40,
 41, 84, 47, 66, 14, 89, 46, 42, 3, 83, 8, 99, 94.
 
-Next steps under #72: verify those gold passages are present and correctly
-represented in the live index; inspect their independent BM25/dense ranks and
+Live-index check: all 21 missing gold IDs are present in `LegalPassageV1`.
+Their text matches the frozen raw corpus exactly and each has the expected
+source snapshot. This check used exact ID comparison while iterating the
+collection, avoiding tokenized text-filter ambiguity. Missing documents or
+changed text do not explain these 21 misses; vector correctness is not yet
+established by this check.
+
+Next steps under #72: inspect their independent BM25/dense ranks and
 the competing passages; distinguish an index defect from semantic mismatch.
 Keep the original factual context: the separate query-focus experiment
 demonstrated that dropping it reduced retrieval quality. The exact-reference
