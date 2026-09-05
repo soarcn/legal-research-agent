@@ -75,7 +75,7 @@ The backlog is dependency-driven and intentionally contains no time estimates. A
 | P5.2 Exact-reference resolver | P2.2, P4 | Deterministic supported-reference lookup and test set |
 | P5.3 BGE reranker | P1.7, P5.1 | Candidate-k/final-k experiments and latency profile |
 | P5.4 Rule-first query router | P5.1–P5.2 | `EXACT_REFERENCE`, `SEMANTIC_QUESTION`, `MULTI_PART_QUESTION` |
-| P5.5 Validation acceptance report | P5.1–P5.4 | Recall@5/MRR/exact-reference gates and failure analysis |
+| P5.5 Validation acceptance report | P5.1–P5.4 | Complete: report records unmet Recall@5/MRR gates and the next retrieval-remediation work; P6 remains blocked |
 
 **Exit:** retrieval gates are met before answer generation begins.
 
