@@ -1,0 +1,460 @@
+{
+  "suite_id": "exact-reference-v1",
+  "source_snapshot_id": "legal-rag-bench@db0b31dc6d195ce9916897e1ac5e4e6209736c8a",
+  "author": "Codex",
+  "reviewer": "Codex (source-ID review; no independent human legal review)",
+  "gold_method": "Explicit source-ID lists grouped by the source section prefix; resolver not used to generate gold. Exact section only, excluding child sections.",
+  "cases": [
+    {
+      "case_id": "exact-001",
+      "reference": "1.1",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "1.1-c1-s1",
+        "1.1-c1-s2"
+      ]
+    },
+    {
+      "case_id": "exact-002",
+      "reference": "section 1.5",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "1.5-c1-s1",
+        "1.5-c1-s2",
+        "1.5-c1-s3",
+        "1.5-c1-s4",
+        "1.5-c2-s1",
+        "1.5-c3-s1",
+        "1.5-c4-s1",
+        "1.5-c5-s1",
+        "1.5-c6-s1",
+        "1.5-c7-s1",
+        "1.5-c7-s2",
+        "1.5-c7-s3",
+        "1.5-c8-s1"
+      ]
+    },
+    {
+      "case_id": "exact-003",
+      "reference": "  SECTION 2.1  ",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "2.1-c1-s1",
+        "2.1-c2-s1",
+        "2.1-c2-s2",
+        "2.1-c3-s1",
+        "2.1-c4-s1",
+        "2.1-c5-s1",
+        "2.1-c6-s1"
+      ]
+    },
+    {
+      "case_id": "exact-004",
+      "reference": "2.3.3",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "2.3.3-c1-s1",
+        "2.3.3-c2-s1",
+        "2.3.3-c2-s2",
+        "2.3.3-c2-s3",
+        "2.3.3-c2-s4",
+        "2.3.3-c3-s1",
+        "2.3.3-c3-s2",
+        "2.3.3-c3-s3",
+        "2.3.3-c4-s1"
+      ]
+    },
+    {
+      "case_id": "exact-005",
+      "reference": "section 2.5",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "2.5-c1-s1",
+        "2.5-c1-s2",
+        "2.5-c2-s1"
+      ]
+    },
+    {
+      "case_id": "exact-006",
+      "reference": "  SECTION 3.12  ",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "3.12-c1-s1",
+        "3.12-c1-s2"
+      ]
+    },
+    {
+      "case_id": "exact-007",
+      "reference": "4.1",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "4.1-c1-s1",
+        "4.1-c2-s1",
+        "4.1-c3-s1",
+        "4.1-c3-s2",
+        "4.1-c4-s1",
+        "4.1-c5-s1",
+        "4.1-c6-s1",
+        "4.1-c6-s2",
+        "4.1-c6-s3",
+        "4.1-c6-s4",
+        "4.1-c6-s5",
+        "4.1-c6-s6",
+        "4.1-c7-s1"
+      ]
+    },
+    {
+      "case_id": "exact-008",
+      "reference": "section 4.13.1",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "4.13.1-c1-s1",
+        "4.13.1-c1-s2",
+        "4.13.1-c1-s3",
+        "4.13.1-c2-s1",
+        "4.13.1-c2-s2",
+        "4.13.1-c3-s1",
+        "4.13.1-c3-s2",
+        "4.13.1-c3-s3",
+        "4.13.1-c3-s4",
+        "4.13.1-c4-s1",
+        "4.13.1-c4-s2",
+        "4.13.1-c5-s1",
+        "4.13.1-c5-s2",
+        "4.13.1-c5-s3",
+        "4.13.1-c5-s4",
+        "4.13.1-c5-s5",
+        "4.13.1-c5-s6",
+        "4.13.1-c5-s7",
+        "4.13.1-c5-s8",
+        "4.13.1-c5-s9"
+      ]
+    },
+    {
+      "case_id": "exact-009",
+      "reference": "  SECTION 4.25  ",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "4.25-c1-s1",
+        "4.25-c2-s1",
+        "4.25-c2-s2",
+        "4.25-c2-s3",
+        "4.25-c2-s4",
+        "4.25-c2-s5"
+      ]
+    },
+    {
+      "case_id": "exact-010",
+      "reference": "4.5",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "4.5-c1-s1",
+        "4.5-c2-s1",
+        "4.5-c3-s1",
+        "4.5-c4-s1",
+        "4.5-c5-s1",
+        "4.5-c5-s2",
+        "4.5-c5-s3",
+        "4.5-c5-s4",
+        "4.5-c5-s5",
+        "4.5-c5-s6",
+        "4.5-c5-s7",
+        "4.5-c5-s8",
+        "4.5-c5-s9",
+        "4.5-c6-s1",
+        "4.5-c7-s1",
+        "4.5-c7-s2",
+        "4.5-c7-s3",
+        "4.5-c7-s4",
+        "4.5-c8-s1",
+        "4.5-c9-s1"
+      ]
+    },
+    {
+      "case_id": "exact-011",
+      "reference": "section 5.1",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "5.1-c1-s1",
+        "5.1-c2-s1",
+        "5.1-c3-s1",
+        "5.1-c3-s2",
+        "5.1-c4-s1",
+        "5.1-c5-s1",
+        "5.1-c5-s2",
+        "5.1-c5-s3",
+        "5.1-c6-s1",
+        "5.1-c7-s1"
+      ]
+    },
+    {
+      "case_id": "exact-012",
+      "reference": "  SECTION 5.2  ",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "5.2-c1-s1",
+        "5.2-c2-s1",
+        "5.2-c2-s2",
+        "5.2-c2-s3",
+        "5.2-c3-s1",
+        "5.2-c4-s1",
+        "5.2-c4-s2",
+        "5.2-c4-s3",
+        "5.2-c4-s4",
+        "5.2-c4-s5",
+        "5.2-c4-s6",
+        "5.2-c4-s7",
+        "5.2-c4-s8",
+        "5.2-c4-s9",
+        "5.2-c4-s10",
+        "5.2-c4-s11",
+        "5.2-c5-s1",
+        "5.2-c5-s2",
+        "5.2-c5-s3",
+        "5.2-c5-s4",
+        "5.2-c6-s1",
+        "5.2-c7-s1",
+        "5.2-c7-s2",
+        "5.2-c7-s3",
+        "5.2-c8-s1",
+        "5.2-c9-s1",
+        "5.2-c9-s2",
+        "5.2-c10-s1",
+        "5.2-c10-s2",
+        "5.2-c10-s3",
+        "5.2-c11-s1"
+      ]
+    },
+    {
+      "case_id": "exact-013",
+      "reference": "7.1.1",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "7.1.1-c1-s1",
+        "7.1.1-c2-s1",
+        "7.1.1-c2-s2",
+        "7.1.1-c2-s3",
+        "7.1.1-c3-s1",
+        "7.1.1-c3-s2",
+        "7.1.1-c4-s1",
+        "7.1.1-c4-s2",
+        "7.1.1-c4-s3",
+        "7.1.1-c4-s4",
+        "7.1.1-c5-s1",
+        "7.1.1-c6-s1",
+        "7.1.1-c6-s2",
+        "7.1.1-c6-s3",
+        "7.1.1-c7-s1",
+        "7.1.1-c8-s1",
+        "7.1.1-c8-s2",
+        "7.1.1-c8-s3",
+        "7.1.1-c8-s4",
+        "7.1.1-c8-s5"
+      ]
+    },
+    {
+      "case_id": "exact-014",
+      "reference": "section 7.2.1",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "7.2.1-c1-s1",
+        "7.2.1-c2-s1",
+        "7.2.1-c3-s1",
+        "7.2.1-c3-s2",
+        "7.2.1-c3-s3",
+        "7.2.1-c4-s1",
+        "7.2.1-c4-s2",
+        "7.2.1-c5-s1",
+        "7.2.1-c5-s2",
+        "7.2.1-c5-s3",
+        "7.2.1-c5-s4",
+        "7.2.1-c5-s5",
+        "7.2.1-c6-s1",
+        "7.2.1-c7-s1",
+        "7.2.1-c8-s1"
+      ]
+    },
+    {
+      "case_id": "exact-015",
+      "reference": "  SECTION 7.3.1.7  ",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "7.3.1.7-c1-s1",
+        "7.3.1.7-c1-s2",
+        "7.3.1.7-c1-s3",
+        "7.3.1.7-c1-s4",
+        "7.3.1.7-c1-s5"
+      ]
+    },
+    {
+      "case_id": "exact-016",
+      "reference": "7.4.12.1",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "7.4.12.1-c1-s1",
+        "7.4.12.1-c2-s1",
+        "7.4.12.1-c2-s2",
+        "7.4.12.1-c2-s3",
+        "7.4.12.1-c2-s4",
+        "7.4.12.1-c3-s1",
+        "7.4.12.1-c3-s2",
+        "7.4.12.1-c3-s3",
+        "7.4.12.1-c4-s1",
+        "7.4.12.1-c5-s1",
+        "7.4.12.1-c6-s1"
+      ]
+    },
+    {
+      "case_id": "exact-017",
+      "reference": "section 7.4.17",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "7.4.17-c1-s1",
+        "7.4.17-c2-s1",
+        "7.4.17-c2-s2",
+        "7.4.17-c2-s3",
+        "7.4.17-c2-s4",
+        "7.4.17-c2-s5",
+        "7.4.17-c2-s6",
+        "7.4.17-c2-s7",
+        "7.4.17-c3-s1",
+        "7.4.17-c4-s1",
+        "7.4.17-c5-s1"
+      ]
+    },
+    {
+      "case_id": "exact-018",
+      "reference": "  SECTION 7.5.10  ",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "7.5.10-c1-s1",
+        "7.5.10-c2-s1",
+        "7.5.10-c2-s2",
+        "7.5.10-c2-s3",
+        "7.5.10-c2-s4",
+        "7.5.10-c2-s5",
+        "7.5.10-c3-s1",
+        "7.5.10-c3-s2",
+        "7.5.10-c3-s3",
+        "7.5.10-c3-s4",
+        "7.5.10-c4-s1",
+        "7.5.10-c4-s2",
+        "7.5.10-c4-s3",
+        "7.5.10-c5-s1",
+        "7.5.10-c6-s1",
+        "7.5.10-c7-s1",
+        "7.5.10-c7-s2"
+      ]
+    },
+    {
+      "case_id": "exact-019",
+      "reference": "8.1.2",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "8.1.2-c1-s1",
+        "8.1.2-c2-s1",
+        "8.1.2-c3-s1",
+        "8.1.2-c3-s2",
+        "8.1.2-c4-s1",
+        "8.1.2-c5-s1",
+        "8.1.2-c5-s2",
+        "8.1.2-c5-s3",
+        "8.1.2-c5-s4",
+        "8.1.2-c6-s1"
+      ]
+    },
+    {
+      "case_id": "exact-020",
+      "reference": "section 8.12",
+      "expected_status": "resolved",
+      "expected_passage_ids": [
+        "8.12-c1-s1",
+        "8.12-c2-s1",
+        "8.12-c2-s2",
+        "8.12-c2-s3",
+        "8.12-c2-s4",
+        "8.12-c2-s5",
+        "8.12-c2-s6",
+        "8.12-c3-s1",
+        "8.12-c4-s1",
+        "8.12-c4-s2",
+        "8.12-c4-s3",
+        "8.12-c4-s4",
+        "8.12-c4-s5",
+        "8.12-c4-s6",
+        "8.12-c4-s7",
+        "8.12-c4-s8",
+        "8.12-c4-s9",
+        "8.12-c4-s10",
+        "8.12-c4-s11",
+        "8.12-c4-s12",
+        "8.12-c4-s13",
+        "8.12-c5-s1",
+        "8.12-c6-s1",
+        "8.12-c7-s1",
+        "8.12-c7-s2",
+        "8.12-c7-s3"
+      ]
+    },
+    {
+      "case_id": "boundary-001",
+      "reference": "99999",
+      "expected_status": "not_found",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-002",
+      "reference": "8.999",
+      "expected_status": "not_found",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-003",
+      "reference": "7.4.12.99",
+      "expected_status": "not_found",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-004",
+      "reference": "Crimes Act 1958 s 322K",
+      "expected_status": "unsupported",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-005",
+      "reference": "R v Smith [2020] VSCA 123",
+      "expected_status": "unsupported",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-006",
+      "reference": "",
+      "expected_status": "unsupported",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-007",
+      "reference": "8..1",
+      "expected_status": "unsupported",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-008",
+      "reference": "8.1.2.3.4",
+      "expected_status": "unsupported",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-009",
+      "reference": "section 8.1 and 8.2",
+      "expected_status": "unsupported",
+      "expected_passage_ids": []
+    },
+    {
+      "case_id": "boundary-010",
+      "reference": "Explain section 8.1",
+      "expected_status": "unsupported",
+      "expected_passage_ids": []
+    }
+  ]
+}
