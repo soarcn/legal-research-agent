@@ -138,6 +138,14 @@ The v1 exact-reference resolver supports only source-native dotted section
 references; statute and case citations are explicitly unsupported until a
 future corpus supplies authoritative legal metadata.
 
+P5 query routing is deliberately rule-first and bounded. A standalone dotted
+source section such as `section 8.1.2` takes the exact-reference path. A
+plain English question takes semantic retrieval. Only a clearly separated
+two- or three-part English question is decomposed, and all other ambiguous or
+long requests remain one semantic query. This is retrieval routing, not Agent
+planning: it has no model dependency, no retry loop, and no authority to
+change scope filters.
+
 ### Answer reliability
 
 P6 adds:
