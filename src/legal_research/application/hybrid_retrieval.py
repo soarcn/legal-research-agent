@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from datetime import date
-from typing import Protocol
+from typing import Literal, Protocol
 
 from legal_research.adapters.weaviate.bm25_retriever import (
     Bm25RetrievalConfiguration,
@@ -48,6 +48,7 @@ class HybridRetrievalConfiguration:
     final_k: int = 10
     rank_constant: int = 60
     mode: str = "hybrid_weighted_rrf"
+    candidate_selection: Literal["weighted_rrf", "balanced"] = "weighted_rrf"
 
     def __post_init__(self) -> None:
         if not 0 <= self.alpha <= 1:
@@ -56,6 +57,8 @@ class HybridRetrievalConfiguration:
             raise ValueError("candidate_k and final_k must be positive with final_k <= candidate_k")
         if self.rank_constant <= 0:
             raise ValueError("rank_constant must be positive")
+        if self.candidate_selection not in {"weighted_rrf", "balanced"}:
+            raise ValueError("unknown candidate selection")
 
 
 @dataclass(frozen=True, slots=True)
@@ -123,6 +126,15 @@ class HybridSourcePassageRetriever:
         ):
             raise ValueError("hybrid candidates must share one source snapshot and jurisdiction")
         fused = _fuse(bm25, dense, resolved)
+        if resolved.candidate_selection == "balanced":
+            by_id = {item.passage_id: item for item in fused}
+            ordered: dict[str, HybridRetrievedPassage] = {}
+            for rank in range(max(len(bm25.passages), len(dense.passages))):
+                for results in (bm25.passages, dense.passages):
+                    if rank < len(results):
+                        passage_id = results[rank].passage_id
+                        ordered.setdefault(passage_id, by_id[passage_id])
+            fused = tuple(ordered.values())
         return HybridRetrievalResult(
             source_snapshot_id=bm25.source_snapshot_id,
             jurisdiction=bm25.jurisdiction,

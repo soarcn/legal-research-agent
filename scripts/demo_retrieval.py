@@ -36,12 +36,18 @@ async def main() -> int:
         "--mode", choices=("bm25", "dense", "hybrid", "hybrid-rerank"), default="bm25"
     )
     parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument("--candidate-k", type=int)
+    parser.add_argument("--alpha", type=float, default=0.5)
+    parser.add_argument(
+        "--candidate-selection", choices=("weighted_rrf", "balanced"), default="weighted_rrf"
+    )
     arguments = parser.parse_args()
     settings = get_settings()
     source = LegalRagBenchSourceLoader.from_manifest(
         Path("data/manifests/legal-rag-bench-v1.json")
     ).load(Path("data/raw"))
     passages = {passage.passage_id: passage for passage in source.passages}
+    retrieval_latency_ms = 0.0
     if arguments.mode == "bm25":
         result = await WeaviateBm25SourcePassageRetriever.from_url(
             settings.weaviate_url, grpc_port=settings.weaviate_grpc_port
@@ -70,7 +76,9 @@ async def main() -> int:
             {"passage_id": item.passage_id, "distance": item.distance} for item in result.passages
         ]
     else:
-        candidate_k = 20 if arguments.mode == "hybrid-rerank" else max(30, arguments.top_k)
+        candidate_k = arguments.candidate_k
+        if candidate_k is None:
+            candidate_k = 20 if arguments.mode == "hybrid-rerank" else max(30, arguments.top_k)
         hybrid = await HybridSourcePassageRetriever(
             WeaviateBm25SourcePassageRetriever.from_url(
                 settings.weaviate_url, grpc_port=settings.weaviate_grpc_port
@@ -89,7 +97,10 @@ async def main() -> int:
             snapshot=source.snapshot,
             jurisdiction="VIC",
             configuration=HybridRetrievalConfiguration(
-                candidate_k=candidate_k, final_k=candidate_k
+                candidate_k=candidate_k,
+                final_k=candidate_k,
+                alpha=arguments.alpha,
+                candidate_selection=arguments.candidate_selection,
             ),
         )
         if arguments.mode == "hybrid":
@@ -104,6 +115,7 @@ async def main() -> int:
                 for item in hybrid.passages[: arguments.top_k]
             ]
         else:
+            retrieval_latency_ms = hybrid.latency_ms
             result = await SourcePassageReranker(BgeM3RerankerProvider(settings.reranker)).rerank(
                 query=arguments.question,
                 hybrid=hybrid,
@@ -128,7 +140,8 @@ async def main() -> int:
                 "question": arguments.question,
                 "mode": arguments.mode,
                 "source_snapshot_id": source.snapshot.source_snapshot_id,
-                "latency_ms": result.latency_ms,
+                "latency_ms": retrieval_latency_ms + result.latency_ms,
+                "candidate_selection": arguments.candidate_selection,
                 "results": rows,
             },
             indent=2,

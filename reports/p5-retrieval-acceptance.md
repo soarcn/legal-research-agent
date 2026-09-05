@@ -85,6 +85,11 @@ discarding background facts after a controlled development regression.
 
 ## Gate assessment and next action
 
+Update: the subsequent controlled [balanced-candidate comparison](p5-balanced-candidates.md)
+improves validation Recall@5 to 0.500 and MRR to 0.320 with 30 candidates.
+The table below is the historical initial gate assessment; the later result
+still does not meet either retrieval gate. Acceptance work remains open in #72.
+
 | Gate | Required | Observed validation | Status |
 | --- | ---: | ---: | --- |
 | Recall@5 | >= 0.80 | 0.250 | Not met |

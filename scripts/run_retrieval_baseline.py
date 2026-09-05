@@ -49,6 +49,9 @@ async def main() -> int:
     parser.add_argument("--alpha", type=float, default=0.5)
     parser.add_argument("--candidate-k", type=int)
     parser.add_argument(
+        "--candidate-selection", choices=("weighted_rrf", "balanced"), default="weighted_rrf"
+    )
+    parser.add_argument(
         "--query-focus", action="store_true", help="Experimental final-question extraction"
     )
     parser.add_argument("--experiment-id", required=True)
@@ -125,6 +128,7 @@ async def main() -> int:
         candidate_k = arguments.candidate_k or (30 if arguments.mode == "hybrid" else 20)
         final_k = arguments.top_k if arguments.mode == "hybrid" else candidate_k
         hybrid_configuration = HybridRetrievalConfiguration(
+            candidate_selection=arguments.candidate_selection,
             alpha=arguments.alpha,
             candidate_k=candidate_k,
             final_k=final_k,

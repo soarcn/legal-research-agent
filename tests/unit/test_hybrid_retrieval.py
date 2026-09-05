@@ -75,3 +75,27 @@ async def test_weighted_rank_fusion_preserves_each_source_rank() -> None:
     assert result.passages[0].bm25_rank == 2
     assert result.passages[0].dense_rank == 1
     assert result.latency_ms == 30
+
+
+async def test_balanced_candidates_keep_dense_only_hits_and_deduplicate() -> None:
+    config = DenseRetrievalConfiguration("model", "d" * 40, 2, True)
+    result = await HybridSourcePassageRetriever(FakeBm25(), FakeDense(), config).retrieve(
+        query="question",
+        snapshot=_snapshot(),
+        jurisdiction="VIC",
+        configuration=HybridRetrievalConfiguration(
+            alpha=0.0, candidate_k=3, final_k=3, candidate_selection="balanced"
+        ),
+    )
+    assert [p.passage_id for p in result.passages] == ["a", "b", "c"]
+    assert result.passages[-1].dense_rank == 2
+    assert result.passages[-1].bm25_rank is None
+    limited = await HybridSourcePassageRetriever(FakeBm25(), FakeDense(), config).retrieve(
+        query="question",
+        snapshot=_snapshot(),
+        jurisdiction="VIC",
+        configuration=HybridRetrievalConfiguration(
+            candidate_k=3, final_k=2, candidate_selection="balanced"
+        ),
+    )
+    assert [p.passage_id for p in limited.passages] == ["a", "b"]
