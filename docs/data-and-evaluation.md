@@ -131,6 +131,10 @@ formal rerun must use a new experiment ID rather than overwriting a result.
 The recorded P4 result and its limitations are in
 [`reports/p4-retrieval-baseline.md`](../reports/p4-retrieval-baseline.md).
 
+P5 hybrid retrieval uses weighted reciprocal-rank fusion rather than directly
+adding BM25 scores to vector distances. The `alpha` setting controls dense
+weight, and every fused result retains its BM25 and dense ranks for audit.
+
 ### Answer reliability
 
 P6 adds:
