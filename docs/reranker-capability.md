@@ -1,5 +1,13 @@
 # BGE reranker capability
 
+## P5 bounded evidence reranking
+
+P5 applies this provider only after retrieval has produced a bounded candidate
+set. The reranker never searches the corpus itself: it scores `(query,
+passage)` pairs, preserves source passage IDs and hybrid rank provenance, and
+returns a smaller final evidence set. Its model ID and revision are validated
+before scores can be accepted.
+
 P1.7 validates a pinned local cross-encoder that scores `(query, passage)`
 pairs. It is a capability check only: it does not retrieve, reorder a legal
 corpus, or establish a relevance-quality metric.
