@@ -179,6 +179,9 @@ async def main() -> int:
                 "hybrid": asdict(hybrid_configuration),
                 "reranker": asdict(rerank_configuration),
             }
+        configuration_identity["embedding_runtime"] = settings.embedding.model_dump(mode="json")
+        if arguments.mode == "hybrid-rerank":
+            configuration_identity["reranker_runtime"] = settings.reranker.model_dump(mode="json")
     code_revision = (
         await asyncio.to_thread(subprocess.check_output, ["git", "rev-parse", "HEAD"], text=True)
     ).strip()
