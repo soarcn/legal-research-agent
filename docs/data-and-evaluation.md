@@ -139,6 +139,9 @@ the two ranked lists before truncation. This protects dense-only high-ranked
 hits that weighted fusion may suppress at low alpha. Its fused scores are
 audit metadata, not the candidate ordering. The default remains weighted RRF.
 See `reports/p5-rank-audit.md` for the measured failure mechanism.
+The equal-budget 30-candidate comparison improved validation Recall@5 from
+0.200 to 0.500 and MRR from 0.140 to 0.320. See
+`reports/p5-balanced-candidates.md` for commands and limits. P5 gates remain unmet.
 Formal P5 experiments vary `alpha` at `0.25`, `0.50`, and `0.75`; reranking
 experiments vary only its bounded candidate count. The evaluator exposes both
 settings explicitly, and records their resolved values in every artifact.
