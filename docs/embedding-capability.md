@@ -35,6 +35,14 @@ for a later index write. It rejects a provider response whose model identity,
 dimension, or vector count differs from the fixed configuration. It has no
 PostgreSQL or Weaviate dependency.
 
+## P4 dense retrieval
+
+Dense retrieval reuses this exact contract for a query embedding. The adapter
+rejects a provider response with a different model ID, revision, or dimension,
+so incomparable vectors cannot be searched against the frozen source-passage
+index. It also requires normalised vectors and applies source-snapshot and
+jurisdiction filters before vector ranking.
+
 ## Installation and smoke check
 
 The heavyweight runtime is optional so the normal deterministic gate remains
