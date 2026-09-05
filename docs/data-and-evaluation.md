@@ -211,6 +211,11 @@ Versioned project-created suites are added as capabilities appear:
 
 The planned minimum sets are:
 
+The P5 exact-reference portion is implemented in `evals/exact_references/v1.json`:
+20 supported references plus 10 separately scored boundary cases. It passed
+against the verified full corpus; see `reports/p5-exact-reference-acceptance.md`.
+This does not complete the planned multi-part or metadata-filter acceptance suites.
+
 | Suite | Composition |
 | --- | --- |
 | P2 golden corpus | 10 synthetic documents, 30–50 sections, nested headings, duplicates, and two versions |
